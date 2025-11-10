@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from .authvars import SECRET_KEY, DEBUG, DB_NAME, DB_USR, DB_PASS,DB_HOST, DB_PORT
+from django.contrib.messages import constants as messages
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -138,9 +139,9 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/'
-
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/users/list/'
+LOGOUT_REDIRECT_URL = '/'
 
 if not DEBUG:
     # SECURE_SSL_REDIRECT = True
@@ -152,4 +153,8 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
-    AUTH_USER_MODEL = 'usersapp.CustomUser'
+AUTH_USER_MODEL = 'usersapp.CustomUser'
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}

@@ -29,10 +29,15 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
+        {% block sidebar %}
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            {% if request.path == '/' %}
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+            {% else %}
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
+            {% endif %}
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -54,7 +59,7 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Interfaz
+                Herramientas manager
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -62,13 +67,35 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
-                    <span>Components</span>
+                    <span>Administracion</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Componentes 1:</h6>
-                        <a class="collapse-item" href="buttons.html">Boton</a>
-                        <a class="collapse-item" href="cards.html">Boton</a>
+                        <h6 class="collapse-header">Modulos:</h6>
+                        <!-- {% if request.path == '/users/add/' %}
+                            <a class="collapse-item" href="{% url 'user_create' %}">Crear usuarios</a>
+                        {% else %}
+                            <a class="collapse-item" href="#">Crear usuarios</a>
+
+                        {% endif %}
+                        {% if request.path == '/users/list/' %}
+                            <a class="collapse-item" href="#">Administrar usuarios</a>
+                        {% else %}
+                            <a class="collapse-item" href="{% url 'user_list' %}">Administrar usuarios</a>
+                        {% endif %} -->
+                        {% with current=request.resolver_match.url_name %}
+                            {% if current == 'user_create' %}
+                                <a class="collapse-item" href="#">Crear usuarios</a>
+                            {% else %}
+                                <a class="collapse-item" href="{% url 'user_create' %}">Crear usuarios</a>
+                            {% endif %}
+
+                            {% if current == 'user_list' %}
+                                <a class="collapse-item" href="#">Administrar usuarios</a>
+                            {% else %}
+                                <a class="collapse-item" href="{% url 'user_list' %}">Administrar usuarios</a>
+                            {% endif %}
+                        {% endwith %}
                     </div>
                 </div>
             </li>
@@ -133,6 +160,7 @@
                 <a class="nav-link" href="tables.html">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tablas</span></a>
+
             </li>
 
             <!-- Divider -->
@@ -144,6 +172,7 @@
             </div>
 
         </ul>
+        {% endblock %}
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -263,6 +292,7 @@
                             <!-- Dropdown - Messages -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="messagesDropdown">
+
                                 <h6 class="dropdown-header">
                                     Message Center
                                 </h6>
@@ -320,7 +350,10 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Martha Jimenez</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    {{ request.user.username|default:"Usuario" }}
+                                </span>
+
                                 <img class="img-profile rounded-circle"
                                     src="img/undraw_profile.svg">
                             </a>
@@ -353,7 +386,39 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
+                <!-- {% if messages %}
+                <div style="margin-left:300px;margin-top:50px;">
+                    {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                            <div class="w3-panel w3-red">{{ message }}</div>
+                        {% elif message.tags == 'success' %}
+                            <div class="w3-panel w3-green">{{ message }}</div>
+                        {% else %}
+                            <div class="w3-panel">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %} -->
+
+                <!-- </div> -->
+                {% block main_page %}                
+
                 <div class="container-fluid">
+
+                {% if messages %}
+                <div class="container mt-3">
+                    {% for message in messages %}
+                    <div 
+                        class="alert alert-{{ message.tags }} alert-dismissible fade show" 
+                        role="alert"                    >
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -681,6 +746,7 @@
                     </div>
 
                 </div>
+                {% endblock %}
                 <!-- /.container-fluid -->
 
             </div>
@@ -719,10 +785,14 @@
                     </button>
                 </div>
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
+               <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Logout</button>
+                    </form>
                 </div>
+
             </div>
         </div>
     </div>
@@ -743,6 +813,10 @@
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
     <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+    {% block extra_js %}
+    {% endblock %}
+
+
 
 </body>
 
