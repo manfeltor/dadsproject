@@ -1,2 +1,71 @@
 {% load static %}
-{% extends "login2.html" %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Login — Bean & Bites</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <style>
+    body {
+      display:flex;align-items:center;justify-content:center;
+      height:100vh;background:var(--bg);
+    }
+    .login-card {
+      background:#fff;padding:32px 40px;border-radius:12px;
+      box-shadow:var(--shadow);width:100%;max-width:380px;
+      text-align:center;
+    }
+    .login-card img {width:64px;height:64px;border-radius:8px;object-fit:cover;margin-bottom:12px;}
+    .login-card h1 {font-size:1.2rem;color:var(--brand);margin-bottom:24px;}
+    .form-row {text-align:left;}
+    .messages {margin-bottom:12px;}
+    .messages .error {background:#ffe0e0;color:#b00;padding:8px 12px;border-radius:8px;}
+    .back-link {display:block;margin-top:16px;font-size:.9rem;}
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo">
+    <h1>Welcome back</h1>
+
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <div class="form-row">
+        <label for="id_username">Username</label>
+        <input type="text" name="username" id="id_username" required autofocus
+               value="{{ form.username.value|default:'' }}">
+      </div>
+      <div class="form-row">
+        <label for="id_password">Password</label>
+        <input type="password" name="password" id="id_password" required>
+      </div>
+
+      {% if form.non_field_errors %}
+        <p style="color:#b00;font-size:.9rem;">{{ form.non_field_errors|join:', ' }}</p>
+      {% endif %}
+
+      <button type="submit" class="btn primary" style="width:100%;margin-top:12px;">Login</button>
+
+      <div style="margin-top:10px;">
+        <label style="font-size:.9rem;color:var(--muted)">
+          <input type="checkbox" name="remember_me" style="vertical-align:middle;margin-right:6px;">
+          Remember me
+        </label>
+      </div>
+    </form>
+
+    <a href="/" class="back-link">← Back to Shop</a>
+  </div>
+
+</body>
+</html>
