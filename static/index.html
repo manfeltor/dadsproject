@@ -27,9 +27,13 @@
                 <div id="userMenu" class="user-menu">
                 <button id="userMenuBtn" class="btn menu-btn">☰</button>
                 <div class="menu-dropdown hidden" id="menuDropdown">
-                    <a href="#" id="profileLink">👤 {{ request.user.username|default:"My Profile" }}</a>
-                    <a href="#" id="cartLink">🛒 My Cart</a>
-                    <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
+                  <a href="#" id="profileLink">👤 {{ request.user.username|default:"My Profile" }}</a>
+
+                  {% if request.user.is_authenticated and request.user.role == "manager" %}
+                    <a href="{% url 'adminlandng' %}">⚙️ Administration</a>
+                  {% endif %}
+
+                  <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
                 </div>
                 </div>
             {% else %}
@@ -97,33 +101,57 @@
   </div>
 
   <!-- Checkout Modal -->
-  <div id="checkoutModal" class="modal hidden">
-    <div class="modal-content">
-      <button class="modal-close" id="closeCheckout">✕</button>
-      <h2>Checkout</h2>
+ {% if user.is_authenticated %}
+    <!-- ✅ Logged-in Checkout Modal -->
+    <div id="checkoutModal" class="modal hidden">
+      <div class="modal-content">
+        <button class="modal-close" id="closeCheckout">✕</button>
+        <h2>Checkout</h2>
 
-      <form id="checkoutForm">
-        <div class="form-row">
-          <label for="name">Full name</label>
-          <input id="name" name="name" required />
-        </div>
-        <div class="form-row">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" required />
-        </div>
-        <div class="form-row">
-          <label for="address">Address (for delivery)</label>
-          <input id="address" name="address" />
-        </div>
+        <form id="checkoutForm">
+          <div class="form-row">
+            <label for="name">Full name</label>
+            <input id="name" name="name" required value="{{ user.get_full_name }}">
+          </div>
+          <div class="form-row">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required value="{{ user.email }}">
+          </div>
+          <div class="form-row">
+            <label for="address">Address (for delivery)</label>
+            <input id="address" name="address" value="{{ user.profile.address|default:'' }}">
+          </div>
 
-        <div class="order-summary" id="orderSummary">
-          <!-- order summary injected by JS -->
-        </div>
+          <div class="order-summary" id="orderSummary"></div>
 
-        <button type="submit" class="btn primary">Place order (simulate)</button>
-      </form>
+          <button type="submit" class="btn primary">Place order (simulate)</button>
+        </form>
+      </div>
     </div>
-  </div>
+    {% else %}
+    <!-- 🚫 Guest Modal: Must have an account -->
+    <!-- 🚫 Guest Modal: Must have an account -->
+    <div id="checkoutModal" class="modal hidden">
+      <div class="modal-content" style="text-align:center;">
+        <button class="modal-close" id="closeCheckout">✕</button>
+        <h2>Checkout</h2>
+
+        <!-- Always keep a form wrapper for JS consistency -->
+        <form id="checkoutForm">
+          <div id="orderSummary"></div>
+          <p style="margin-top:12px;">
+            ⚠️ You need to be logged in to place an online order.
+          </p>
+          <p>
+            Don’t have an account?<br>
+            <a href="{% url 'newcontact' %}" class="btn">Request one here</a>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    {% endif %}
+
 
   <!-- Product Quick View Modal -->
   <div id="productModal" class="modal hidden">
@@ -151,7 +179,7 @@
         </div>
         <button type="submit" class="btn primary" style="width:100%;margin-top:10px;">Login</button>
         <p style="text-align:center;margin-top:10px;font-size:.9rem;color:var(--muted)">
-            Don’t have an account? <a href="#">Sign up</a>
+            Don’t have an account? <a href="{% url 'logout' %}">Sign up</a>
         </p>
         </form>
     </div>

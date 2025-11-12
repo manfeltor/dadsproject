@@ -3,6 +3,9 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
+from .forms import ContactForm
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 
@@ -33,3 +36,25 @@ class SBLoginView(LoginView):
     
 def unauthorized(request):
     return render(request, 'unauthorized.html', status=403)
+
+
+def newcontact(request):
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            # send_mail( TODO
+            #     subject=f"[Account Request] {data['full_name']}",
+            #     message=f"Name: {data['full_name']}\nEmail: {data['email']}\nCompany: {data['company']}\n\nMessage:\n{data['message']}",
+            #     from_email=settings.DEFAULT_FROM_EMAIL,
+            #     recipient_list=['admin@yourdomain.com'],
+            # )
+            messages.success(request, "Your request has been sent. We’ll contact you soon!")
+            return render(request, "contact.html", {"form": ContactForm(), "sent": True})
+    else:
+        form = ContactForm()
+
+    return render(request, "contact.html", {"form": form})
+
+def adminlandng(request):
+    return render(request, 'admin.html')

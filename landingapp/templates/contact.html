@@ -1,0 +1,86 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact Us — Bean & Bites</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
+        <h1>Bean & Bites</h1>
+      </div>
+
+      <nav class="contact-nav">
+        <a href="{% url 'home' %}" class="btn">🏠 Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:600px;margin-top:40px;margin-bottom:60px;">
+    <h2 style="text-align:center;color:var(--brand);margin-bottom:10px;">Request an Account</h2>
+    <p style="text-align:center;color:var(--muted);margin-bottom:24px;">
+      Only verified business partners and customers can have accounts.
+      Fill in your details below and our team will reach out to approve your access.
+    </p>
+
+    <form id="contactForm" class="contact-form" method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-row">
+        {{ form.full_name.label_tag }}
+        {{ form.full_name }}
+    </div>
+    <div class="form-row">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+    </div>
+    <div class="form-row">
+        {{ form.company.label_tag }}
+        {{ form.company }}
+    </div>
+    <div class="form-row">
+        {{ form.message.label_tag }}
+        {{ form.message }}
+    </div>
+    <button type="submit" class="btn primary" style="width:100%;font-size:1rem;margin-top:10px;">Send Request</button>
+    </form>
+
+    {% if sent %}
+    <div id="contactSuccess" style="margin-top:20px;text-align:center;">
+        <h3>✅ Request Sent!</h3>
+        <p>Thank you for reaching out. Our team will contact you soon.</p>
+        <a href="{% url 'home' %}" class="btn">Back to Store</a>
+    </div>
+    {% endif %}
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Bean & Bites — Freshly roasted. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Simple simulated form submission
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("contactForm");
+      const successBox = document.getElementById("contactSuccess");
+      const yearEl = document.getElementById("year");
+      yearEl.textContent = new Date().getFullYear();
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        // Here you’ll later POST to Django /contact endpoint
+        form.classList.add("hidden");
+        successBox.classList.remove("hidden");
+      });
+    });
+  </script>
+</body>
+</html>

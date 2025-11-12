@@ -75,6 +75,9 @@ const productModal = document.getElementById("productModal");
 const productModalBody = document.getElementById("productModalBody");
 const closeProductModal = document.getElementById("closeProductModal");
 const yearEl = document.getElementById("year");
+const closeLogin = document.getElementById("closeLogin");
+const loginModal = document.getElementById("loginModal");
+
 
 /* ------------ Utilities ------------ */
 
@@ -292,6 +295,8 @@ document.addEventListener("click", (e)=>{
 
 /* ------------ Checkout handling ------------ */
 function renderOrderSummary() {
+  if (!orderSummaryEl) return; // skip if element missing
+
   const {subtotal, shipping, total} = cartTotals();
   let html = `<h4>Items</h4>`;
   if (cart.length === 0) html += "<p>(cart is empty)</p>";
@@ -312,33 +317,41 @@ function renderOrderSummary() {
   orderSummaryEl.innerHTML = html;
 }
 
-checkoutForm.addEventListener("submit", (ev)=>{
-  ev.preventDefault();
-  // Simulate order submission
-  const form = new FormData(checkoutForm);
-  const order = {
-    id: "ORD-" + Date.now().toString(36).toUpperCase(),
-    name: form.get("name"),
-    email: form.get("email"),
-    address: form.get("address"),
-    items: cart.map(i=>({ id: i.id, qty: i.qty })),
-    totals: cartTotals(),
-    placedAt: new Date().toISOString()
-  };
 
-  // In real world you'd POST order to server. Here we simulate success.
-  console.log("Simulated order:", order);
-  alert(`Order placed! ${order.id}\nWe sent a confirmation to ${order.email || "your email"}.`);
+if (checkoutForm) {
+  checkoutForm.addEventListener("submit", (ev) => {
+    ev.preventDefault();
 
-  // clear cart
-  cart = [];
-  saveCart();
-  renderCart();
+    // If there's no name input, we're in guest mode
+    const nameInput = checkoutForm.querySelector("#name");
+    if (!nameInput) {
+      alert("You need an account to place an order. Please request one first.");
+      window.location.href = "contact.html"; // or use Django's {% url 'contact' %}
+      return;
+    }
 
-  // close modal
-  checkoutModal.classList.add("hidden");
-  checkoutForm.reset();
-});
+    const form = new FormData(checkoutForm);
+    const order = {
+      id: "ORD-" + Date.now().toString(36).toUpperCase(),
+      name: form.get("name"),
+      email: form.get("email"),
+      address: form.get("address"),
+      items: cart.map(i=>({ id: i.id, qty: i.qty })),
+      totals: cartTotals(),
+      placedAt: new Date().toISOString()
+    };
+
+    console.log("Simulated order:", order);
+    alert(`Order placed! ${order.id}\nWe sent a confirmation to ${order.email || "your email"}.`);
+
+    cart = [];
+    saveCart();
+    renderCart();
+    checkoutModal.classList.add("hidden");
+    checkoutForm.reset();
+  });
+}
+
 
 /* ------------ Product quick view modal ------------ */
 function openProductModal(id) {
@@ -380,12 +393,18 @@ function init() {
 
     // real modal action (safe binding)
     const loginBtn = document.getElementById("loginButton");
+
     if (loginBtn) {
     loginBtn.addEventListener("click", () => {
-        const modal = document.getElementById("loginModal");
-        if (modal) modal.classList.remove("hidden");
+        if (loginModal) loginModal.classList.remove("hidden");
     });
     }
+  if (closeLogin && loginModal) {
+    closeLogin.addEventListener("click", () => {
+    loginModal.classList.add("hidden");
+  });
+}
+
 
     /* ------------ Hamburger menu toggle ------------ */
     const menuBtn = document.getElementById("userMenuBtn");
@@ -406,12 +425,12 @@ function init() {
     });
     }
 
-    if (window.location.search.includes("error=1")) {
-    alert("Incorrect username or password. Please try again.");
-    const modal = document.getElementById("loginModal");
-    if (modal) modal.classList.remove("hidden");
-    window.history.replaceState({}, document.title, window.location.pathname);
-    }
+    // if (window.location.search.includes("error=1")) {
+    // alert("Incorrect username or password. Please try again.");
+    // const modal = document.getElementById("loginModal");
+    // if (modal) modal.classList.remove("hidden");
+    // window.history.replaceState({}, document.title, window.location.pathname);
+    // }
 
 
 init();

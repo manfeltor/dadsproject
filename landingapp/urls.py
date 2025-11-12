@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth.views import LogoutView
-from .views import SBLoginView, home, unauthorized
+from .views import SBLoginView, home, unauthorized, newcontact, adminlandng
 
 
 urlpatterns = [
@@ -8,4 +8,6 @@ urlpatterns = [
     path('login/', SBLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('unauthorized/', unauthorized, name='unauthorized'),
+    path('newcontact/', newcontact, name='newcontact'),
+    path('adminlandng/', adminlandng, name='adminlandng'),
 ]
