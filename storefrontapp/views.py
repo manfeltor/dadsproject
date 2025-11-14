@@ -56,5 +56,5 @@ def newcontact(request):
 
     return render(request, "contact.html", {"form": form})
 
-def adminlandng(request):
+def adminlanding(request):
     return render(request, 'admin.html')

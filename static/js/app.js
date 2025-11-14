@@ -432,6 +432,49 @@ function init() {
     // window.history.replaceState({}, document.title, window.location.pathname);
     // }
 
+// users list tables
+/* ---------- Users Table Sorting ---------- */
+document.addEventListener("DOMContentLoaded", () => {
+  const table = document.getElementById("usersTable");
+  if (!table) return; // only run on users_list.html
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const tbody = table.querySelector("tbody");
+  const headers = table.querySelectorAll("th[data-field]");
+  let currentSort = { field: null, direction: 1 }; // 1 = asc, -1 = desc
+
+  headers.forEach(header => {
+    header.addEventListener("click", () => {
+      const field = header.dataset.field;
+      if (currentSort.field === field) {
+        currentSort.direction *= -1; // toggle direction
+      } else {
+        currentSort.field = field;
+        currentSort.direction = 1;
+      }
+
+      // Update sort indicators
+      headers.forEach(h => h.querySelector(".sort-indicator").textContent = "");
+      header.querySelector(".sort-indicator").textContent =
+        currentSort.direction === 1 ? "▲" : "▼";
+
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      const sorted = rows.sort((a, b) => {
+        const aVal = a.children[header.cellIndex].innerText.trim().toLowerCase();
+        const bVal = b.children[header.cellIndex].innerText.trim().toLowerCase();
+        if (!isNaN(aVal) && !isNaN(bVal)) {
+          return (Number(aVal) - Number(bVal)) * currentSort.direction;
+        }
+        return aVal.localeCompare(bVal) * currentSort.direction;
+      });
+
+      tbody.innerHTML = "";
+      sorted.forEach(row => tbody.appendChild(row));
+    });
+  });
+});
+
 
 init();
 
