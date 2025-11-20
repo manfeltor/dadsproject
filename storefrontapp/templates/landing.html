@@ -1,204 +1,186 @@
+{% extends "base.html" %}
 {% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bean & Bites — Coffee & Snacks</title>
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-</head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="brand">
-        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
-        <h1>Bean & Bites</h1>
-      </div>
 
-      <div class="search-cart">
-  <input id="searchInput" placeholder="Search coffee or snacks..." aria-label="Search" />
-  <button id="cartButton" class="cart-btn" aria-label="Open cart">
-    🛒 <span id="cartCount">0</span>
-  </button>
+{% block title %}
+Bean & Bites — Coffee & Snacks
+{% endblock %}
 
-        <!-- User panel -->
-            <div class="user-panel">
-            {% if request.user.is_authenticated %}
-                <div id="userMenu" class="user-menu">
-                <button id="userMenuBtn" class="btn menu-btn">☰</button>
-                <div class="menu-dropdown hidden" id="menuDropdown">
-                  <a href="#" id="profileLink">👤 {{ request.user.username|default:"My Profile" }}</a>
+{% block styles %}
+{% endblock %}
 
-                  {% if request.user.is_authenticated and request.user.role == "manager" %}
-                    <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
-                  {% endif %}
+{% block topbar %}
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
+      <h1>Bean & Bites</h1>
+    </div>
 
-                  <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
-                </div>
-                </div>
-            {% else %}
-                <button id="loginButton" type="button" class="btn primary">Login</button>
+    <div class="search-cart">
+      <input id="searchInput" placeholder="Search coffee or snacks..." aria-label="Search" />
+      <button id="cartButton" class="cart-btn" aria-label="Open cart">🛒 <span id="cartCount">0</span></span></button>
+
+      <!-- User panel -->
+      <div class="user-panel">
+        {% if request.user.is_authenticated %}
+        <div id="userMenu" class="user-menu">
+          <button id="userMenuBtn" class="btn menu-btn">☰</button>
+          <div class="menu-dropdown hidden" id="menuDropdown">
+            <a href="#" id="profileLink">👤 {{ request.user.username|default:"My Profile" }}</a>
+
+            {% if request.user.role == "manager" %}
+              <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
             {% endif %}
-            </div>
 
+            <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
+          </div>
         </div>
-
-    </div>
-
-    <nav class="category-bar container" id="categories">
-      <!-- categories inserted by JS -->
-    </nav>
-  </header>
-
-  <main class="container main-grid">
-    <section class="products-section">
-      <div class="controls">
-        <div class="sort-group">
-          <label for="sortSelect">Sort:</label>
-          <select id="sortSelect">
-            <option value="default">Featured</option>
-            <option value="price-asc">Price: low → high</option>
-            <option value="price-desc">Price: high → low</option>
-            <option value="name-asc">Name A → Z</option>
-          </select>
-        </div>
+        {% else %}
+        <button id="loginButton" type="button" class="btn primary">Login</button>
+        {% endif %}
       </div>
-
-      <div id="productGrid" class="product-grid">
-        <!-- product cards injected by JS -->
-      </div>
-    </section>
-
-    <aside class="sidebar about">
-      <h3>About</h3>
-      <p>Local-roasted coffee, snacks, and small-batch delights. Pick single bags or bundle for savings.</p>
-
-      <h4>Delivery</h4>
-      <p>Pickup and local delivery available. Free pickup from our shop.</p>
-
-      <h4>Contact</h4>
-      <p>hello@beanandbites.example</p>
-    </aside>
-  </main>
-
-  <!-- Cart Sidebar -->
-  <div id="cartSidebar" class="cart-sidebar">
-    <div class="cart-header">
-      <h2>Your Cart</h2>
-      <button id="closeCart">✕</button>
-    </div>
-    <div id="cartItems" class="cart-items"></div>
-
-    <div class="cart-footer">
-      <div class="totals">
-        <div><span>Subtotal:</span> <strong id="subtotal">$0.00</strong></div>
-        <div><span>Shipping:</span> <strong id="shipping">$0.00</strong></div>
-        <div class="total-row"><span>Total:</span> <strong id="total">$0.00</strong></div>
-      </div>
-
-      <button id="checkoutBtn" class="btn primary">Checkout</button>
     </div>
   </div>
 
-  <!-- Checkout Modal -->
- {% if user.is_authenticated %}
-    <!-- ✅ Logged-in Checkout Modal -->
-    <div id="checkoutModal" class="modal hidden">
-      <div class="modal-content">
-        <button class="modal-close" id="closeCheckout">✕</button>
-        <h2>Checkout</h2>
+  <nav class="category-bar container" id="categories"></nav>
+</header>
+{% endblock %}
 
-        <form id="checkoutForm">
-          <div class="form-row">
-            <label for="name">Full name</label>
-            <input id="name" name="name" required value="{{ user.get_full_name }}">
-          </div>
-          <div class="form-row">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" required value="{{ user.email }}">
-          </div>
-          <div class="form-row">
-            <label for="address">Address (for delivery)</label>
-            <input id="address" name="address" value="{{ user.profile.address|default:'' }}">
-          </div>
-
-          <div class="order-summary" id="orderSummary"></div>
-
-          <button type="submit" class="btn primary">Place order (simulate)</button>
-        </form>
-      </div>
-    </div>
-    {% else %}
-    <!-- 🚫 Guest Modal: Must have an account -->
-    <!-- 🚫 Guest Modal: Must have an account -->
-    <div id="checkoutModal" class="modal hidden">
-      <div class="modal-content" style="text-align:center;">
-        <button class="modal-close" id="closeCheckout">✕</button>
-        <h2>Checkout</h2>
-
-        <!-- Always keep a form wrapper for JS consistency -->
-        <form id="checkoutForm">
-          <div id="orderSummary"></div>
-          <p style="margin-top:12px;">
-            ⚠️ You need to be logged in to place an online order.
-          </p>
-          <p>
-            Don’t have an account?<br>
-            <a href="{% url 'newcontact' %}" class="btn">Request one here</a>
-          </p>
-        </form>
+{% block canvas %}
+<main class="container main-grid">
+  <section class="products-section">
+    <div class="controls">
+      <div class="sort-group">
+        <label for="sortSelect">Sort:</label>
+        <select id="sortSelect">
+          <option value="default">Featured</option>
+          <option value="price-asc">Price: low → high</option>
+          <option value="price-desc">Price: high → low</option>
+          <option value="name-asc">Name A → Z</option>
+        </select>
       </div>
     </div>
 
-    {% endif %}
+    <div id="productGrid" class="product-grid"></div>
+  </section>
 
+  <aside class="sidebar about">
+    <h3>About</h3>
+    <p>Local-roasted coffee, snacks, and small-batch delights. Pick single bags or bundle for savings.</p>
 
-  <!-- Product Quick View Modal -->
-  <div id="productModal" class="modal hidden">
+    <h4>Delivery</h4>
+    <p>Pickup and local delivery available. Free pickup from our shop.</p>
+
+    <h4>Contact</h4>
+    <p>hello@beanandbites.example</p>
+  </aside>
+</main>
+
+<!-- Cart Sidebar -->
+<div id="cartSidebar" class="cart-sidebar">
+  <div class="cart-header">
+    <h2>Your Cart</h2>
+    <button id="closeCart">✕</button>
+  </div>
+  <div id="cartItems" class="cart-items"></div>
+  <div class="cart-footer">
+    <div class="totals">
+      <div><span>Subtotal:</span> <strong id="subtotal">$0.00</strong></div>
+      <div><span>Shipping:</span> <strong id="shipping">$0.00</strong></div>
+      <div class="total-row"><span>Total:</span> <strong id="total">$0.00</strong></div>
+    </div>
+
+    <button id="checkoutBtn" class="btn primary">Checkout</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+
+{% if user.is_authenticated %}
+  <div id="checkoutModal" class="modal hidden">
     <div class="modal-content">
-      <button class="modal-close" id="closeProductModal">✕</button>
-      <div id="productModalBody"></div>
+      <button class="modal-close" id="closeCheckout">✕</button>
+      <h2>Checkout</h2>
+
+      <form id="checkoutForm">
+        <div class="form-row">
+          <label for="name">Full name</label>
+          <input id="name" name="name" required value="{{ user.get_full_name }}">
+        </div>
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required value="{{ user.email }}">
+        </div>
+        <div class="form-row">
+          <label for="address">Address</label>
+          <input id="address" name="address" value="{{ user.profile.address|default:'' }}">
+        </div>
+
+        <div class="order-summary" id="orderSummary"></div>
+
+        <button type="submit" class="btn primary">Place order (simulate)</button>
+      </form>
     </div>
   </div>
 
-   <!-- Login Modal -->
-    <div id="loginModal" class="modal hidden">
-    <div class="modal-content">
-        <button class="modal-close" id="closeLogin">✕</button>
-        <h2>Login</h2>
+{% else %}
 
-        <form id="loginForm" class="login-form" method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        <div class="form-row">
-            <label for="username">Username</label>
-            <input id="username" name="username" required placeholder="Username" />
-        </div>
-        <div class="form-row">
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password" required placeholder="••••••••" />
-        </div>
-        <button type="submit" class="btn primary" style="width:100%;margin-top:10px;">Login</button>
-        <p style="text-align:center;margin-top:10px;font-size:.9rem;color:var(--muted)">
-            Don’t have an account? <a href="{% url 'logout' %}">Sign up</a>
+  <div id="checkoutModal" class="modal hidden">
+    <div class="modal-content" style="text-align:center;">
+      <button class="modal-close" id="closeCheckout">✕</button>
+      <h2>Checkout</h2>
+
+      <form id="checkoutForm">
+        <div id="orderSummary"></div>
+        <p style="margin-top:12px;">⚠️ You need to be logged in to place an online order.</p>
+        <p>Don’t have an account?<br>
+          <a href="{% url 'newcontact' %}" class="btn">Request one here</a>
         </p>
-        </form>
+      </form>
     </div>
-    </div>
+  </div>
 
+{% endif %}
 
-        <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <p>© <span id="year"></span> Bean & Bites — Freshly roasted. All rights reserved.</p>
-    </div>
-  </footer>
+<!-- Quick View -->
+<div id="productModal" class="modal hidden">
+  <div class="modal-content">
+    <button class="modal-close" id="closeProductModal">✕</button>
+    <div id="productModalBody"></div>
+  </div>
+</div>
 
-  <!-- Load js -->
-  <script src="{% static 'js/app.js' %}"></script>
+<!-- Login Modal -->
+<div id="loginModal" class="modal hidden">
+  <div class="modal-content">
+    <button class="modal-close" id="closeLogin">✕</button>
+    <h2>Login</h2>
 
-  <form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">
+    <form id="loginForm" method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <div class="form-row">
+        <label for="username">Username</label>
+        <input id="username" name="username" required placeholder="Username" />
+      </div>
+      <div class="form-row">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required placeholder="••••••••" />
+      </div>
+      <button type="submit" class="btn primary" style="width:100%;margin-top:10px;">Login</button>
+      <p style="text-align:center;margin-top:10px;font-size:.9rem;color:var(--muted)">
+        Don’t have an account? <a href="{% url 'newcontact' %}">Sign up</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/landing.js' %}"></script>
+
+<form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">
   {% csrf_token %}
-  </form>
-
-</body>
-</html>
+</form>
+{% endblock %}

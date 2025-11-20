@@ -1,74 +1,93 @@
+{% extends "base.html" %}
 {% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin Panel — Bean & Bites</title>
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-</head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="brand">
-        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
-        <h1>Admin — Bean & Bites</h1>
-      </div>
 
-      <nav>
-        <a href="{% url 'home' %}" class="btn">🏠 Back to Store</a>
-        <a href="#" class="btn accent" id="logoutBtn">🚪 Logout</a>
-      </nav>
+{% block title %}
+Admin Panel — Bean & Bites
+{% endblock %}
+
+{% block styles %}
+<!-- If admin needs special CSS later, add it here -->
+{% endblock %}
+
+
+{% block topbar %}
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
+      <h1>Admin — Bean & Bites</h1>
     </div>
-  </header>
 
-  <main class="container admin-dashboard">
-    <h2>Administration Panel</h2>
-    <p class="muted">Manage your store operations below. Choose a section to continue.</p>
+    <!-- User Panel (same as landing.html) -->
+    <div class="user-panel">
+      {% if request.user.is_authenticated %}
+      <div id="userMenu" class="user-menu">
+        <button id="userMenuBtn" class="btn menu-btn">☰</button>
+        <div class="menu-dropdown hidden" id="menuDropdown">
 
-    <section class="admin-grid">
-      <div class="admin-card" id="ordersCard">
-        <h3>📦 Orders</h3>
-        <p>View, update, and fulfill customer orders.</p>
-        <a href="#" class="btn primary">Open Orders</a>
+          <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
+
+          {% if request.user.role == "manager" %}
+            <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          {% endif %}
+
+          <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
+        </div>
       </div>
-
-      <div class="admin-card" id="usersCard">
-        <h3>👥 Users</h3>
-        <p>Manage registered users, permissions, and account requests.</p>
-        <a href="{% url 'user_list' %}" class="btn primary">Manage Users</a>
-      </div>
-
-      <div class="admin-card" id="messagesCard">
-        <h3>✉️ Messages</h3>
-        <p>Read and respond to contact form messages.</p>
-        <a href="#" class="btn primary">View Messages</a>
-      </div>
-
-      <div class="admin-card" id="productsCard">
-        <h3>☕ Products</h3>
-        <p>Add, edit, or remove items in your store catalog.</p>
-        <a href="#" class="btn primary">Manage Products</a>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p>© <span id="year"></span> Bean & Bites Admin — All rights reserved.</p>
+      {% else %}
+      <button id="loginButton" class="btn primary">Login</button>
+      {% endif %}
     </div>
-  </footer>
+  </div>
+</header>
+{% endblock %}
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("year").textContent = new Date().getFullYear();
-      document.getElementById("logoutBtn").addEventListener("click", (e) => {
-        e.preventDefault();
-        alert("Logging out...");
-        // Later, call Django logout view here
-        window.location.href = "index.html";
-      });
-    });
-  </script>
-</body>
-</html>
+
+{% block canvas %}
+<div class="admin-local-header container">
+  <a href="{% url 'home' %}" class="btn">🏠 Back to Store</a>
+</div>
+<main class="container admin-dashboard">
+  <h2>Administration Panel</h2>
+  <p class="muted">Manage your store operations below. Choose a section to continue.</p>
+
+  <section class="admin-grid">
+    <div class="admin-card" id="ordersCard">
+      <h3>📦 Orders</h3>
+      <p>View, update, and fulfill customer orders.</p>
+      <a href="#" class="btn primary">Open Orders</a>
+    </div>
+
+    <div class="admin-card" id="usersCard">
+      <h3>👥 Users</h3>
+      <p>Manage registered users, permissions, and account requests.</p>
+      <a href="{% url 'user_list' %}" class="btn primary">Manage Users</a>
+    </div>
+
+    <div class="admin-card" id="messagesCard">
+      <h3>✉️ Messages</h3>
+      <p>Read and respond to contact form messages.</p>
+      <a href="#" class="btn primary">View Messages</a>
+    </div>
+
+    <div class="admin-card" id="productsCard">
+      <h3>☕ Products</h3>
+      <p>Add, edit, or remove items in your store catalog.</p>
+      <a href="#" class="btn primary">Manage Products</a>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+
+{% block modals %}
+<!-- The login modal already comes from base.html -->
+{% endblock %}
+
+
+{% block scripts %}
+<!-- No inline scripts needed! main.js handles everything -->
+<form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
+{% endblock %}

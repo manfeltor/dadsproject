@@ -7,6 +7,7 @@
   <title>Bean & Bites — Coffee & Snacks</title>
   <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 </head>
+
 <body>
   <header class="site-header">
     <div class="container header-inner">
@@ -49,6 +50,7 @@
       <!-- categories inserted by JS -->
     </nav>
   </header>
+
 
   <main class="container main-grid">
     <section class="products-section">
@@ -100,6 +102,7 @@
     </div>
   </div>
 
+
   <!-- Checkout Modal -->
  {% if user.is_authenticated %}
     <!-- ✅ Logged-in Checkout Modal -->
@@ -129,7 +132,6 @@
       </div>
     </div>
     {% else %}
-    <!-- 🚫 Guest Modal: Must have an account -->
     <!-- 🚫 Guest Modal: Must have an account -->
     <div id="checkoutModal" class="modal hidden">
       <div class="modal-content" style="text-align:center;">
@@ -184,7 +186,6 @@
         </form>
     </div>
     </div>
-
 
         <!-- Footer -->
   <footer class="site-footer">

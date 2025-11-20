@@ -363,3 +363,87 @@ table.users-table {
   opacity: 0.6;
   margin-left: 4px;
 }
+
+/* -----------------------------------------
+   ALERTS (Django messages)
+-------------------------------------------- */
+.alert {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: fadeSlideIn 0.35s ease-out;
+  border-left: 5px solid transparent;
+}
+
+/* Icons */
+.alert::before {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* SUCCESS */
+.alert-success {
+  background: #e8f9ee;
+  border-left-color: #2bb74c;
+  color: #146c2f;
+}
+.alert-success::before {
+  content: "✔️";
+}
+
+/* INFO */
+.alert-info {
+  background: #e9f3ff;
+  border-left-color: #3a7ef3;
+  color: #0a3d8f;
+}
+.alert-info::before {
+  content: "ℹ️";
+}
+
+/* WARNING */
+.alert-warning {
+  background: #fff8e3;
+  border-left-color: #dca10b;
+  color: #8a6200;
+}
+.alert-warning::before {
+  content: "⚠️";
+}
+
+/* ERROR */
+.alert-error {
+  background: #ffe8e8;
+  border-left-color: #e13333;
+  color: #8e0b0b;
+}
+.alert-error::before {
+  content: "⛔";
+}
+
+/* DEBUG (optional) */
+.alert-debug {
+  background: #f3f3f3;
+  border-left-color: #888;
+  color: #555;
+}
+.alert-debug::before {
+  content: "🛠️";
+}
+
+/* Slide-in animation */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}

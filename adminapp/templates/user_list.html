@@ -1,68 +1,93 @@
+{% extends "base.html" %}
 {% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Users Administration — Bean & Bites</title>
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-</head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="brand">
-        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
-        <h1>Admin — Bean & Bites</h1>
+
+{% block title %}
+Users Administration — Bean & Bites
+{% endblock %}
+
+{% block topbar %}
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
+      <h1>Admin — Bean & Bites</h1>
+    </div>
+
+    <!-- User menu (coming from main.js behavior) -->
+    <div class="user-panel">
+      {% if request.user.is_authenticated %}
+      <div id="userMenu" class="user-menu">
+        <button id="userMenuBtn" class="btn menu-btn">☰</button>
+        <div class="menu-dropdown hidden" id="menuDropdown">
+          <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
+        </div>
       </div>
-
-      <nav>
-        <a href="{% url 'adminlanding' %}" class="btn">⬅ Back to Admin Panel</a>
-      </nav>
+      {% else %}
+      <button id="loginButton" class="btn primary">Login</button>
+      {% endif %}
     </div>
-  </header>
 
-  <main class="users-container">
-    <h2>Users Administration</h2>
-    <p class="muted">Click a column header to sort ascending / descending.</p>
+  </div>
+</header>
+{% endblock %}
 
-    <table class="users-table" id="usersTable">
-      <thead>
-        <tr>
-          <th data-field="id">ID <span class="sort-indicator"></span></th>
-          <th data-field="username">Username <span class="sort-indicator"></span></th>
-          <th data-field="name">Name <span class="sort-indicator"></span></th>
-          <th data-field="role">Role <span class="sort-indicator"></span></th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for user in users %}
-        <tr>
-          <td>{{ user.id }}</td>
-          <td>{{ user.username }}</td>
-          <td>{{ user.get_full_name|default:user.username }}</td>
-          <td>{{ user.role|default:"-" }}</td>
-          <td class="actions">
-            <a href="#" class="btn">Edit</a>
-            <form action="#" method="post" style="display:inline;">
+{% block canvas %}
+
+<!-- Local admin header -->
+<div class="admin-local-header container">
+  <a href="{% url 'adminlanding' %}" class="btn">⬅ Back to Admin Panel</a>
+</div>
+
+<main class="users-container">
+  <h2>Users Administration</h2>
+  <p class="muted">Click a column header to sort ascending / descending.</p>
+
+  <table class="users-table" id="usersTable">
+    <thead>
+      <tr>
+        <th data-field="id">ID <span class="sort-indicator"></span></th>
+        <th data-field="username">Username <span class="sort-indicator"></span></th>
+        <th data-field="name">Name <span class="sort-indicator"></span></th>
+        <th data-field="role">Role <span class="sort-indicator"></span></th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.get_full_name|default:user.username }}</td>
+        <td>{{ user.role|default:"-" }}</td>
+        <td class="actions">
+          <a href="#" class="btn">Edit</a>
+          <form action="{% url 'user_delete' user.id %}" method="post" style="display:inline;">
               {% csrf_token %}
-              <button type="submit" class="btn accent" onclick="return confirm('Delete this user?')">Delete</button>
-            </form>
-          </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">No users found.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </main>
+              <button type="submit" class="btn accent"
+                      onclick="return confirm('Delete this user?')">
+                  Delete
+              </button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">
+          No users found.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</main>
+{% endblock %}
 
-  <footer class="site-footer">
-    <div class="container">
-      <p>© <span id="year"></span> Bean & Bites Admin — All rights reserved.</p>
-    </div>
-  </footer>
+{% block scripts %}
+<script src="{% static 'js/users_list.js' %}"></script>
 
-  <script src="{% static 'js/app.js' %}"></script>
-</body>
-</html>
+<form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
+{% endblock %}
