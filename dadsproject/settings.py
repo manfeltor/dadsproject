@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'storefrontapp',
     'usersapp',
     'adminapp',
+    'productsapp'
 ]
 
 MIDDLEWARE = [
@@ -159,3 +160,6 @@ AUTH_USER_MODEL = 'usersapp.CustomUser'
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / "media"

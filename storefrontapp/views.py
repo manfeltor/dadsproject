@@ -55,6 +55,3 @@ def newcontact(request):
         form = ContactForm()
 
     return render(request, "contact.html", {"form": form})
-
-def adminlanding(request):
-    return render(request, 'admin.html')

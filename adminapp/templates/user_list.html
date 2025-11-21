@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block title %}
 Users Administration — Bean & Bites
 {% endblock %}
@@ -41,7 +40,14 @@ Users Administration — Bean & Bites
 </div>
 
 <main class="users-container">
-  <h2>Users Administration</h2>
+  <div style="display:flex;justify-content:space-between;align-items:center; margin-bottom: 20px;">
+    <h2>Users Administration</h2>
+    <a class="btn primary icon-btn" href="{% url 'user_create' %}">
+      <span class="icon">+</span>
+      <span>Create User</span>
+    </a>
+  </div>
+
   <p class="muted">Click a column header to sort ascending / descending.</p>
 
   <table class="users-table" id="usersTable">
@@ -63,12 +69,10 @@ Users Administration — Bean & Bites
         <td>{{ user.role|default:"-" }}</td>
         <td class="actions">
           <a href="#" class="btn">Edit</a>
+
           <form action="{% url 'user_delete' user.id %}" method="post" style="display:inline;">
-              {% csrf_token %}
-              <button type="submit" class="btn accent"
-                      onclick="return confirm('Delete this user?')">
-                  Delete
-              </button>
+            {% csrf_token %}
+            <button type="submit" class="btn accent" onclick="return confirm('Delete this user?')">Delete</button>
           </form>
         </td>
       </tr>
