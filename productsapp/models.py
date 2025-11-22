@@ -13,7 +13,7 @@ class Rubro(models.Model):
 
 
 class Category(models.Model):
-    rubro = models.ForeignKey(Rubro, on_delete=models.CASCADE, related_name="categories")
+    rubro = models.ForeignKey(Rubro, on_delete=models.PROTECT, related_name="categories")
     name = models.CharField(max_length=80, unique=True)
     slug = models.SlugField(max_length=80, unique=True)
 
@@ -30,7 +30,7 @@ class Product(models.Model):
 
     category = models.ForeignKey(
         Category,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="products"
     )
 

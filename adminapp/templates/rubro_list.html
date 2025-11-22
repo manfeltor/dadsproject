@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Rubros Administration — Bean & Bites
+{% endblock %}
+
+{% block topbar %}
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
+      <h1>Admin — Bean & Bites</h1>
+    </div>
+
+    <!-- User panel (handled by main.js) -->
+    <div class="user-panel">
+      {% if request.user.is_authenticated %}
+      <div id="userMenu" class="user-menu">
+        <button id="userMenuBtn" class="btn menu-btn">☰</button>
+        <div class="menu-dropdown hidden" id="menuDropdown">
+          <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <button id="loginButton" class="btn primary">Login</button>
+      {% endif %}
+    </div>
+
+  </div>
+</header>
+{% endblock %}
+
+{% block canvas %}
+
+<!-- Local admin header -->
+<div class="admin-local-header container">
+  <a href="{% url 'adminlanding' %}" class="btn">⬅ Back to Admin Panel</a>
+</div>
+
+<main class="container admin-dashboard">
+
+  <div style="display:flex;justify-content:space-between;align-items:center; margin-bottom:20px;">
+    <h2>Rubros Administration</h2>
+    <a href="{% url 'rubro_add' %}" class="btn primary">➕ Add New Rubro</a>
+  </div>
+
+  <p class="muted">Rubros are the top-level grouping for categories. Example: Coffee, Snacks, Drinks.</p>
+
+  <table class="users-table" style="margin-top:20px;">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Slug</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for rubro in rubros %}
+      <tr>
+        <td>{{ rubro.name }}</td>
+        <td>{{ rubro.slug }}</td>
+
+        <td class="actions" style="white-space:nowrap;">
+          <a href="{% url 'rubro_edit' rubro.id %}" class="btn">Edit</a>
+
+          <form action="{% url 'rubro_delete' rubro.id %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit"
+              class="btn accent"
+              onclick="return confirm('Delete this rubro? All related categories will be removed!')">
+              Delete
+            </button>
+          </form>
+        </td>
+      </tr>
+
+      {% empty %}
+      <tr>
+        <td colspan="3" style="text-align:center;color:var(--muted);padding:20px;">
+          No rubros found.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</main>
+
+{% endblock %}
+
+{% block scripts %}
+<form id="logoutForm" method="post" action="{% url 'logout' %}" style="display:none;">
+  {% csrf_token %}
+</form>
+{% endblock %}

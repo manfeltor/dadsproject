@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Create Category — Bean & Bites Admin
+{% endblock %}
+
+{% block topbar %}
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop"
+           alt="logo" />
+      <h1>Admin — Bean & Bites</h1>
+    </div>
+
+    <div class="user-panel">
+      {% if request.user.is_authenticated %}
+      <div id="userMenu" class="user-menu">
+        <button id="userMenuBtn" class="btn menu-btn">☰</button>
+        <div class="menu-dropdown hidden" id="menuDropdown">
+          <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <button id="loginButton" class="btn primary">Login</button>
+      {% endif %}
+    </div>
+
+  </div>
+</header>
+{% endblock %}
+
+{% block canvas %}
+
+<div class="admin-local-header container">
+  <a href="{% url 'category_list' %}" class="btn">⬅ Back to Categories</a>
+</div>
+
+<main class="container admin-dashboard">
+
+  <h2>Create New Category</h2>
+  <p class="muted">A category belongs to a Rubro (top-level grouping).</p>
+
+  <form method="post" class="admin-form" style="margin-top:20px; max-width:600px;">
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div class="form-row" style="margin-bottom:16px;">
+        <label for="{{ field.id_for_label }}" style="font-weight:600;">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="alert alert-error" style="margin-top:6px;">
+            {{ field.errors|striptags }}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="btn primary" style="margin-top:12px;">
+      Create Category
+    </button>
+  </form>
+
+</main>
+
+{% endblock %}
+
+{% block scripts %}
+<form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
+{% endblock %}
