@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib.auth.views import LogoutView
 from .views import SBLoginView, home, unauthorized, newcontact
+from productsapp.apis import products_api
 
 
 urlpatterns = [
@@ -9,4 +10,5 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('unauthorized/', unauthorized, name='unauthorized'),
     path('newcontact/', newcontact, name='newcontact'),
+    path("api/products/", products_api, name="products_api"),
 ]
