@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from .services import create_order_from_payload
+import traceback
 
 
 @require_POST
@@ -33,7 +34,8 @@ def checkout_api(request):
             {"status": "error", "message": str(e)},
             status=400,
         )
-    except Exception:
+    except Exception as e:
+        traceback.print_exc()
         return JsonResponse(
             {"status": "error", "message": "Internal error while creating order"},
             status=500,

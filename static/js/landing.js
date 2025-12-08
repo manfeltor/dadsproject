@@ -7,6 +7,21 @@
    - Checkout modal (logged-in vs guest)
 */
 
+/* CSRF helper */
+function getCSRFToken() {
+  const name = "csrftoken=";
+  const decoded = decodeURIComponent(document.cookie);
+  const parts = decoded.split(";");
+  for (let p of parts) {
+    let c = p.trim();
+    if (c.startsWith(name)) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+
 /* ---------- Config: API endpoint & page size ---------- */
 
 const API_URL = "/api/products/"; // adjust to your actual endpoint
@@ -536,41 +551,120 @@ function renderOrderSummary() {
   orderSummaryEl.innerHTML = html;
 }
 
+/* -------------------- REAL CHECKOUT API INTEGRATION -------------------- */
+
 if (checkoutForm) {
-  checkoutForm.addEventListener("submit", (ev) => {
+  const deliveryMethodInput = document.getElementById("delivery_method");
+  const addressRow = document.getElementById("addressRow");
+  const addressInput = document.getElementById("address");
+  const phoneInput = document.getElementById("phone");
+  const noteInput = document.getElementById("note");
+
+  // 🚦 Toggle address field based on delivery method
+  if (deliveryMethodInput && addressRow) {
+    const toggleAddress = () => {
+      if (deliveryMethodInput.value === "delivery") {
+        addressRow.style.display = "block";
+        addressInput.required = true;
+      } else {
+        addressRow.style.display = "none";
+        addressInput.required = false;
+      }
+    };
+    toggleAddress();
+    deliveryMethodInput.addEventListener("change", toggleAddress);
+  }
+
+  checkoutForm.addEventListener("submit", async (ev) => {
     ev.preventDefault();
 
-    const nameInput = checkoutForm.querySelector("#name");
-
-    // Guest mode (no name field in template)
-    if (!nameInput) {
-      alert("You need an account to place an order.");
-      window.location.href = "/contact/"; // adjust to {% url 'newcontact' %} in template if you want
+    if (!cart.length) {
+      alert("Your cart is empty.");
       return;
     }
 
-    const formData = new FormData(checkoutForm);
+    const nameEl = checkoutForm.querySelector("#name");
+    const emailEl = checkoutForm.querySelector("#email");
 
-    const order = {
-      id: "ORD-" + Date.now().toString(36).toUpperCase(),
-      name: formData.get("name"),
-      email: formData.get("email"),
-      address: formData.get("address"),
-      items: cart.map(i => ({ id: i.id, qty: i.qty, name: i.name, price: i.price })),
-      totals: cartTotals(),
-      placedAt: new Date().toISOString()
+    if (!nameEl || !emailEl) {
+      alert("You must be logged in to place an order.");
+      return;
+    }
+
+    // 🛠 Build payload for backend API
+    const payload = {
+      delivery_method: deliveryMethodInput.value,
+      customer_name: nameEl.value.trim(),
+      customer_email: emailEl.value.trim(),
+      customer_address: addressInput.value.trim(),
+      customer_phone: phoneInput.value.trim(),
+      note: noteInput.value.trim(),
+      items: cart.map(i => ({
+        product_id: i.id,
+        quantity: i.qty
+      }))
     };
 
-    console.log("Simulated order:", order);
-    alert(`Order placed! ${order.id}\nWe sent a confirmation to ${order.email || "your email"}.`);
+    // 🧪 Client-side validation
+    if (!payload.customer_name || !payload.customer_email) {
+      alert("Name and email are required.");
+      return;
+    }
+    if (payload.delivery_method === "delivery" && !payload.customer_address) {
+      alert("Address is required for delivery.");
+      return;
+    }
 
-    cart = [];
-    saveCart();
-    renderCart();
-    checkoutModal.classList.add("hidden");
-    checkoutForm.reset();
+    // 🚀 Call the backend API
+    try {
+      const res = await fetch("/api/checkout/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-CSRFToken": getCSRFToken(),   // <-- ADD THIS
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Error processing your order.");
+        return;
+      }
+
+      // 🎉 SUCCESS — Show success modal
+      const successModal = document.getElementById("orderSuccessModal");
+      const successMsg = document.getElementById("orderSuccessMessage");
+
+      if (successMsg) {
+        successMsg.textContent = `Your order #${data.order_id} has been placed successfully!`;
+      }
+
+      if (successModal) {
+        successModal.classList.remove("hidden");
+      }
+
+      // Clear cart
+      cart = [];
+      saveCart();
+      renderCart();
+
+      // Close modal
+      checkoutModal.classList.add("hidden");
+      checkoutForm.reset();
+
+      // Optional: redirect to "order complete" page later
+      // window.location.href = `/order/${data.order_id}/`;
+
+    } catch (err) {
+      console.error(err);
+      alert("Unexpected error. Please try again.");
+    }
   });
 }
+
 
 /* ---------- Global UI events ---------- */
 
@@ -692,6 +786,34 @@ async function fetchProducts() {
     }
   }
 }
+
+/* ---------- Order Success Modal Handlers ---------- */
+
+const orderSuccessModal = document.getElementById("orderSuccessModal");
+const closeOrderSuccess = document.getElementById("closeOrderSuccess");
+const orderSuccessOk = document.getElementById("orderSuccessOk");
+
+if (closeOrderSuccess && orderSuccessModal) {
+  closeOrderSuccess.addEventListener("click", () => {
+    orderSuccessModal.classList.add("hidden");
+  });
+}
+
+if (orderSuccessOk && orderSuccessModal) {
+  orderSuccessOk.addEventListener("click", () => {
+    orderSuccessModal.classList.add("hidden");
+  });
+}
+
+// Optional: close on clicking the backdrop
+if (orderSuccessModal) {
+  orderSuccessModal.addEventListener("click", (e) => {
+    if (e.target === orderSuccessModal) {
+      orderSuccessModal.classList.add("hidden");
+    }
+  });
+}
+
 
 /* ---------- Init ---------- */
 

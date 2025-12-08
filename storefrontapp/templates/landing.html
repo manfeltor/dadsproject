@@ -123,8 +123,26 @@ Bean & Bites — Coffee & Snacks
           <input id="email" name="email" type="email" required value="{{ user.email }}">
         </div>
         <div class="form-row">
+          <label for="delivery_method">Delivery Method</label>
+          <select id="delivery_method" name="delivery_method" class="form-control">
+              <option value="pickup">Pickup at Store</option>
+              <option value="delivery">Home Delivery</option>
+          </select>
+        </div>
+
+        <div class="form-row" id="addressRow">
           <label for="address">Address</label>
           <input id="address" name="address" value="{{ user.profile.address|default:'' }}">
+        </div>
+
+        <div class="form-row">
+          <label for="phone">Phone</label>
+          <input id="phone" name="phone" value="{{ user.profile.phone_number|default:'' }}">
+        </div>
+
+        <div class="form-row">
+          <label for="note">Note (optional)</label>
+          <input id="note" name="note" placeholder="Any instructions or notes...">
         </div>
 
         <div class="order-summary" id="orderSummary"></div>
@@ -184,6 +202,27 @@ Bean & Bites — Coffee & Snacks
     </form>
   </div>
 </div>
+
+<!-- Order Success Modal -->
+<div id="orderSuccessModal" class="modal hidden">
+  <div class="modal-content" style="max-width:420px;text-align:center;">
+    <button class="modal-close" id="closeOrderSuccess">✕</button>
+
+    <div style="font-size:3rem; margin-bottom:10px;">🎉</div>
+    <h2>Order Placed!</h2>
+
+    <p id="orderSuccessMessage" style="margin-top:10px; color:var(--muted);">
+      Your order has been placed successfully.
+    </p>
+
+    <div style="margin-top:20px;">
+      <button id="orderSuccessOk" class="btn primary" style="width:100%;">
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+</div>
+
 
 {% endblock %}
 
