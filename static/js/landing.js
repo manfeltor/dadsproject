@@ -477,7 +477,7 @@ function openProductModal(productId) {
 
   // ---- Modal HTML ----
   productModalBody.innerHTML = `
-    <div style="display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:start">
+    <div class="pv-layout">
       <img src="${product.image || ""}" alt="${product.name}"
            style="width:100%;border-radius:8px;object-fit:cover" />
 
@@ -813,6 +813,47 @@ if (orderSuccessModal) {
     }
   });
 }
+
+/* ---------- Dynamic ribbon Handlers ---------- */
+
+
+// JavaScript
+const messages = [
+  "🔥 Nuevo infusionado, lanzamiento el viernes!!!! revisa los adelantos",
+  "🚚 Envio gratis en todas las compras de mas de $10.000",
+  "⭐ Cafe bourbon exhaustiva seleccion",
+  "🎁 Pide envoltorio de regalo!!! | Nueva opcion en el checkout",
+  "📱 App mobil muy pronto!!! | Descargala para iOS & Android"
+];
+
+let currentIndex = 0;
+const ribbonMessage = document.getElementById('ribbonMessage');
+const updateInterval = 15000; // 30 seconds
+
+function updateRibbon() {
+  // Fade out
+  ribbonMessage.style.opacity = '0';
+  
+  setTimeout(() => {
+    // Update message
+    currentIndex = (currentIndex + 1) % messages.length;
+    ribbonMessage.textContent = messages[currentIndex];
+    
+    // Fade in
+    ribbonMessage.style.opacity = '1';
+    
+    // Update ARIA label for screen readers
+    ribbonMessage.setAttribute('aria-label', `Live update: ${messages[currentIndex]}`);
+  }, 300); // Match CSS transition time
+}
+
+// Initialize
+ribbonMessage.textContent = messages[0];
+ribbonMessage.setAttribute('aria-label', `Live update: ${messages[0]}`);
+
+// Start updates
+let ribbonTimer = setInterval(updateRibbon, updateInterval);
+
 
 
 /* ---------- Init ---------- */

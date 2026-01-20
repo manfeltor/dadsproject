@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Orden #{{ order.id }} — Admin
+{% endblock %}
+
+{% block topbar %}
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop"
+           alt="logo" />
+      <h1>Administrador — MoM</h1>
+    </div>
+
+    <div class="user-panel">
+      {% if request.user.is_authenticated %}
+      <div id="userMenu" class="user-menu">
+        <button id="userMenuBtn" class="btn menu-btn">☰</button>
+        <div class="menu-dropdown hidden" id="menuDropdown">
+          <a id="profileLink">👤 {{ request.user.username }}</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administracion</a>
+          <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <button id="loginButton" class="btn primary">Login</button>
+      {% endif %}
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block canvas %}
+
+<div class="admin-local-header container" style="display:flex;gap:10px;align-items:center;margin-top:14px;">
+  <a href="{% url 'order_list' %}" class="btn">⬅ De vuelta a las ordenes</a>
+  <a href="{% url 'adminlanding' %}" class="btn">⬅ De vuelta al panel de administrador</a>
+</div>
+
+<main class="container admin-dashboard" style="margin-top:10px;">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+    <div>
+      <h2 style="margin-bottom:6px;">Orden #{{ order.id }}</h2>
+      <p class="muted" style="margin:0;">
+        Creada: {{ order.created_at|date:"Y-m-d H:i" }} · Actualizada: {{ order.updated_at|date:"Y-m-d H:i" }}
+      </p>
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <span class="btn" style="cursor:default;">
+        Estado: <strong style="margin-left:6px;">{{ order.get_status_display }}</strong>
+      </span>
+
+      <form method="post" action="{% url 'order_update_status' order.id %}" style="display:flex;gap:8px;align-items:center;">
+        {% csrf_token %}
+        <label for="status" class="muted" style="font-size:.9rem;">Actualizar:</label>
+        <select id="status" name="status" class="form-control" style="min-width:200px;">
+          {% for value,label in status_choices %}
+            <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn primary">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns: 1.2fr .8fr; gap:18px; margin-top:18px;">
+    <!-- Left: Customer + Items -->
+    <section class="card" style="padding:16px;">
+      <h3 style="margin-top:0;">Cliente</h3>
+
+      <div style="display:grid;grid-template-columns: 140px 1fr; gap:10px; align-items:center;">
+        <div class="muted">Usuario asignado:</div>
+        <div>
+          {% if order.user %}
+            {{ order.user.username }}
+          {% else %}
+            <span class="muted">— Sin cita previa / sin asignar —</span>
+          {% endif %}
+        </div>
+
+        <div class="muted">Nombre:</div>
+        <div>{{ order.customer_name }}</div>
+
+        <div class="muted">Email:</div>
+        <div>{{ order.customer_email }}</div>
+
+        <div class="muted">telefono:</div>
+        <div>{{ order.customer_phone|default:"—" }}</div>
+
+        <div class="muted">Envio:</div>
+        <div>
+          <strong>{{ order.get_delivery_method_display }}</strong>
+          {% if order.is_delivery %}
+            <div class="muted" style="margin-top:4px;">
+              {{ order.customer_address|default:"(No address)" }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if order.note %}
+        <div style="margin-top:14px;">
+          <h4 style="margin:0 0 6px 0;">Nota</h4>
+          <div class="muted" style="white-space:pre-wrap;">{{ order.note }}</div>
+        </div>
+      {% endif %}
+
+      <hr style="margin:18px 0; opacity:.2;" />
+
+      <h3 style="margin-top:0;">Items</h3>
+
+      <table class="users-table" style="margin-top:10px;">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th style="width:120px;">Unidad</th>
+            <th style="width:90px;">Cantidad</th>
+            <th style="width:140px;">Total linea</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order.items.all %}
+          <tr>
+            <td>
+              <strong>{{ item.product_name }}</strong>
+              {% if item.product %}
+                <div class="muted" style="font-size:.85rem;">ID de producto: {{ item.product_id }}</div>
+              {% else %}
+                <div class="muted" style="font-size:.85rem;">(Producto removido)</div>
+              {% endif %}
+            </td>
+            <td>${{ item.unit_price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td><strong>${{ item.line_total }}</strong></td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" style="text-align:center;color:var(--muted);padding:18px;">
+              No se encontraron items en esta orden.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Right: Totals summary -->
+    <aside class="card" style="padding:16px; height:fit-content;">
+      <h3 style="margin-top:0;">Totales</h3>
+
+      <div style="display:grid;grid-template-columns: 1fr auto; row-gap:10px; column-gap:10px; margin-top:12px;">
+        <div class="muted">Subtotales</div>
+        <div><strong>${{ order.subtotal }}</strong></div>
+
+        <div class="muted">Descuentos</div>
+        <div>
+          {% if order.discount_total and order.discount_total > 0 %}
+            <strong>- ${{ order.discount_total }}</strong>
+          {% else %}
+            <span class="muted">—</span>
+          {% endif %}
+        </div>
+
+        <div class="muted">Envio</div>
+        <div><strong>${{ order.shipping_total }}</strong></div>
+
+        <div style="border-top:1px solid rgba(0,0,0,.15); padding-top:10px; margin-top:6px;">
+          <strong>Total</strong>
+        </div>
+        <div style="border-top:1px solid rgba(0,0,0,.15); padding-top:10px; margin-top:6px;">
+          <strong>${{ order.total }}</strong>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;" class="muted">
+        Tip: status changes trigger messages via Django messages (already in base.html).
+      </div>
+    </aside>
+  </div>
+
+</main>
+
+{% endblock %}
+
+{% block scripts %}
+<form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
+{% endblock %}

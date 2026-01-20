@@ -2,25 +2,25 @@
 {% load static %}
 
 {% block title %}
-Create User — Bean & Bites Admin
+Editar Producto — MoM
 {% endblock %}
 
 {% block topbar %}
 <header class="site-header">
   <div class="container header-inner">
     <div class="brand">
-      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
-      <h1>Admin — Bean & Bites</h1>
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop"
+           alt="logo" />
+      <h1>Administrador — MoM</h1>
     </div>
 
-    <!-- User menu, powered by main.js -->
     <div class="user-panel">
       {% if request.user.is_authenticated %}
       <div id="userMenu" class="user-menu">
         <button id="userMenuBtn" class="btn menu-btn">☰</button>
         <div class="menu-dropdown hidden" id="menuDropdown">
-          <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
-          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a id="profileLink">👤 {{ request.user.username }}</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administracion</a>
           <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
         </div>
       </div>
@@ -35,43 +35,47 @@ Create User — Bean & Bites Admin
 
 {% block canvas %}
 
-<!-- Local admin header -->
 <div class="admin-local-header container">
-  <a href="{% url 'user_list' %}" class="btn">⬅ Back to User List</a>
+  <a href="{% url 'product_list' %}" class="btn">⬅ Regreso a productos</a>
 </div>
 
 <main class="container admin-dashboard">
 
-  <h2>Create New User</h2>
-  <p class="muted">Fill in the form below to create a new account.</p>
+  <h2>Editar Producto</h2>
+  <p class="muted">Modifica cualquier detalle del producto a continuación.</p>
 
-  <form method="post" class="admin-form" style="margin-top: 20px; max-width: 600px;">
+  <form method="post" enctype="multipart/form-data"
+        class="admin-form" style="margin-top:20px; max-width:800px;">
     {% csrf_token %}
-    
+
     {% for field in form %}
-      <div class="form-row" style="margin-bottom: 16px;">
-        <label for="{{ field.id_for_label }}" style="font-weight: 600;">
+      <div class="form-row" style="margin-bottom:16px;">
+        <label for="{{ field.id_for_label }}" style="font-weight:600;">
           {{ field.label }}
         </label>
         {{ field }}
+        {% if field.help_text %}
+          <small class="muted">{{ field.help_text }}</small>
+        {% endif %}
         {% if field.errors %}
-          <div class="alert alert-error" style="margin-top: 6px;">
+          <div class="alert alert-error" style="margin-top:6px;">
             {{ field.errors|striptags }}
           </div>
         {% endif %}
       </div>
     {% endfor %}
 
-    <button type="submit" class="btn primary" style="margin-top: 12px;">
-      Create User
+    <button type="submit" class="btn primary" style="margin-top:12px;">
+      Guardar cambios
     </button>
   </form>
 
 </main>
+
 {% endblock %}
 
 {% block scripts %}
-<form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">
+<form id="logoutForm" method="post" action="{% url 'logout' %}" style="display:none;">
   {% csrf_token %}
 </form>
 {% endblock %}

@@ -9,6 +9,15 @@ Bean & Bites — Coffee & Snacks
 {% endblock %}
 
 {% block topbar %}
+
+<!-- HTML -->
+<div class="live-ribbon" id="liveRibbon" aria-live="polite">
+  <span class="live-indicator">🟢 LIVE</span>
+  <span class="ribbon-message" id="ribbonMessage">
+    <!-- Message will be injected here -->
+  </span>
+</div>
+
 <header class="site-header">
   <div class="container header-inner">
     <div class="brand">
@@ -17,8 +26,11 @@ Bean & Bites — Coffee & Snacks
     </div>
 
     <div class="search-cart">
-      <input id="searchInput" placeholder="Search coffee or snacks..." aria-label="Search" />
-      <button id="cartButton" class="cart-btn" aria-label="Open cart">🛒 <span id="cartCount">0</span></span></button>
+      {# Search moved out of header (kept DOM clean). Cart stays here. #}
+
+      <button id="cartButton" class="cart-btn" aria-label="Open cart">
+        🛒 <span id="cartCount">0</span>
+      </button>
 
       <!-- User panel -->
       <div class="user-panel">
@@ -26,10 +38,12 @@ Bean & Bites — Coffee & Snacks
         <div id="userMenu" class="user-menu">
           <button id="userMenuBtn" class="btn menu-btn">☰</button>
           <div class="menu-dropdown hidden" id="menuDropdown">
-            <a href="#" id="profileLink">👤 {{ request.user.username|default:"My Profile" }}</a>
+            <a href="#" id="profileLink">👤 {{ request.user.username|default:"Mi Perfil" }}</a>
+
+            <a href="{% url 'my_orders' %}">🧾 Mis pedidos</a>
 
             {% if request.user.role == "manager" %}
-              <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+              <a href="{% url 'adminlanding' %}">⚙️ Administración</a>
             {% endif %}
 
             <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
@@ -42,37 +56,90 @@ Bean & Bites — Coffee & Snacks
     </div>
   </div>
 
+  {# Keep rubro buttons in header (works great as “browse mode”) #}
   <nav class="category-bar container" id="categories"></nav>
 </header>
 {% endblock %}
 
 {% block canvas %}
-<main class="container main-grid">
-  <section class="products-section">
-    <div class="controls">
-      <div class="sort-group">
-        <label for="sortSelect">Sort:</label>
-        <select id="sortSelect">
-          <option value="default">Featured</option>
-          <option value="price-asc">Price: low → high</option>
-          <option value="price-desc">Price: high → low</option>
-          <option value="name-asc">Name A → Z</option>
-        </select>
-      </div>
 
-      <div class="filter-group">
-        <label for="categoryFilter">Category:</label>
-        <select id="categoryFilter" disabled>
-          <option value="">All</option>
-        </select>
-      </div>
+{# --- Splash Intro Overlay (isolated) --- #}
+<div id="splashIntro" class="splash-intro" aria-hidden="true">
+  <div class="splash-inner">
+    <div class="splash-line" aria-hidden="true"></div>
+
+    <div class="splash-logo" aria-hidden="true">
+      <img
+        src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=200&auto=format&fit=crop&ixlib=rb-4.0.3"
+        alt=""
+      />
+      <div class="splash-brand">MoM &amp; Cafe & Snacks</div>
     </div>
 
-    <div id="productGrid" class="product-grid"></div>
+    <div class="splash-tagline" aria-hidden="true">
+      Café recién tostado • Snacks artesanales
+    </div>
+  </div>
+</div>
 
+
+{# ---------------- HERO section ---------------- #}
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <h2>Café recién tostado. Snacks artesanales.</h2>
+      <p class="muted">
+        Elegí tu rubro, buscá tu favorito y armá tu pedido en minutos.
+      </p>
+    </div>
+    <div class="hero-media" aria-hidden="true">
+      <img
+        src="{{ MEDIA_URL }}lol.png"
+        alt=""
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>
+
+{# ---------------- Search section (independent) ---------------- #}
+<section class="search-section">
+  <div class="container">
+    <div class="search-panel card">
+      <div class="search-row">
+        <div class="search-field">
+          <label class="muted" for="searchInput">Buscar</label>
+          <input id="searchInput" placeholder="Buscar café o snacks..." aria-label="Search" />
+        </div>
+
+        <div class="search-field">
+          <label class="muted" for="sortSelect">Ordenar</label>
+          <select id="sortSelect">
+            <option value="default">Destacados</option>
+            <option value="price-asc">Precio: menor → mayor</option>
+            <option value="price-desc">Precio: mayor → menor</option>
+            <option value="name-asc">Nombre A → Z</option>
+          </select>
+        </div>
+
+        <div class="search-field">
+          <label class="muted" for="categoryFilter">Categoría</label>
+          <select id="categoryFilter" disabled>
+            <option value="">Todas</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<main class="container main-grid">
+  <section class="products-section">
+    <div id="productGrid" class="product-grid"></div>
     <div id="pagination" class="pagination"></div>
   </section>
-
 
   <aside class="sidebar about">
     <h3>About</h3>
@@ -103,6 +170,7 @@ Bean & Bites — Coffee & Snacks
     <button id="checkoutBtn" class="btn primary">Checkout</button>
   </div>
 </div>
+
 {% endblock %}
 
 {% block modals %}
@@ -122,11 +190,12 @@ Bean & Bites — Coffee & Snacks
           <label for="email">Email</label>
           <input id="email" name="email" type="email" required value="{{ user.email }}">
         </div>
+
         <div class="form-row">
           <label for="delivery_method">Delivery Method</label>
           <select id="delivery_method" name="delivery_method" class="form-control">
-              <option value="pickup">Pickup at Store</option>
-              <option value="delivery">Home Delivery</option>
+            <option value="pickup">Pickup at Store</option>
+            <option value="delivery">Home Delivery</option>
           </select>
         </div>
 
@@ -147,7 +216,7 @@ Bean & Bites — Coffee & Snacks
 
         <div class="order-summary" id="orderSummary"></div>
 
-        <button type="submit" class="btn primary">Place order (simulate)</button>
+        <button type="submit" class="btn primary">Place order</button>
       </form>
     </div>
   </div>
@@ -179,6 +248,21 @@ Bean & Bites — Coffee & Snacks
   </div>
 </div>
 
+<!-- Order Success Modal -->
+<div id="orderSuccessModal" class="modal hidden">
+  <div class="modal-content" style="max-width:420px;text-align:center;">
+    <button class="modal-close" id="closeOrderSuccess">✕</button>
+    <div style="font-size:3rem; margin-bottom:10px;">🎉</div>
+    <h2>Order Placed!</h2>
+    <p id="orderSuccessMessage" style="margin-top:10px; color:var(--muted);">
+      Your order has been placed successfully.
+    </p>
+    <div style="margin-top:20px;">
+      <button id="orderSuccessOk" class="btn primary" style="width:100%;">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
 <!-- Login Modal -->
 <div id="loginModal" class="modal hidden">
   <div class="modal-content">
@@ -203,30 +287,10 @@ Bean & Bites — Coffee & Snacks
   </div>
 </div>
 
-<!-- Order Success Modal -->
-<div id="orderSuccessModal" class="modal hidden">
-  <div class="modal-content" style="max-width:420px;text-align:center;">
-    <button class="modal-close" id="closeOrderSuccess">✕</button>
-
-    <div style="font-size:3rem; margin-bottom:10px;">🎉</div>
-    <h2>Order Placed!</h2>
-
-    <p id="orderSuccessMessage" style="margin-top:10px; color:var(--muted);">
-      Your order has been placed successfully.
-    </p>
-
-    <div style="margin-top:20px;">
-      <button id="orderSuccessOk" class="btn primary" style="width:100%;">
-        Continue Shopping
-      </button>
-    </div>
-  </div>
-</div>
-
-
 {% endblock %}
 
 {% block scripts %}
+<script src="{% static 'js/intro_splash.js' %}"></script>
 <script src="{% static 'js/landing.js' %}"></script>
 
 <form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">

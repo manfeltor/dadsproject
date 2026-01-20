@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Products Administration — Bean & Bites
+Administracion de productos — MoM
 {% endblock %}
 
 {% block topbar %}
@@ -10,7 +10,7 @@ Products Administration — Bean & Bites
   <div class="container header-inner">
     <div class="brand">
       <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
-      <h1>Admin — Bean & Bites</h1>
+      <h1>Administrador — MoM</h1>
     </div>
 
     <!-- User menu, handled by main.js -->
@@ -20,7 +20,7 @@ Products Administration — Bean & Bites
         <button id="userMenuBtn" class="btn menu-btn">☰</button>
         <div class="menu-dropdown hidden" id="menuDropdown">
           <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
-          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administracion</a>
           <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
         </div>
       </div>
@@ -43,25 +43,25 @@ Products Administration — Bean & Bites
 <main class="container admin-dashboard">
 
   <div style="display:flex;justify-content:space-between;align-items:center; margin-bottom:20px;">
-    <h2>Products Administration</h2>
-    <a href="{% url 'product_add' %}" class="btn primary">➕ Add New Product</a>
+    <h2>Administracion de productos</h2>
+    <a href="{% url 'product_add' %}" class="btn primary">➕ Agregar nuevo producto</a>
     <a href="{% url 'category_list' %}" class="btn primary">➕ Administrar categorias</a>
     <a href="{% url 'rubro_list' %}" class="btn primary">➕ Administrar rubros</a>
   </div>
 
-  <p class="muted">Manage your products. Click edit to modify or delete to remove.</p>
+  <p class="muted">Gestiona tus productos. Haz clic en "Editar" para modificarlos o en "Eliminar" para eliminarlos.</p>
 
   <table class="users-table" style="margin-top:20px;">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Price</th>
-        <th>Discount</th>
-        <th>Featured</th>
+        <th>Nombre</th>
+        <th>Categoria</th>
+        <th>Precio</th>
+        <th>Descuento</th>
+        <th>Destacado</th>
         <th>Stock</th>
-        <th>Bundle?</th>
-        <th>Actions</th>
+        <th>Paquete?</th>
+        <th>Acciones</th>
       </tr>
     </thead>
 
@@ -84,7 +84,7 @@ Products Administration — Bean & Bites
         <td>{{ product.is_bundle|yesno:"Yes,No" }}</td>
 
         <td class="actions" style="white-space:nowrap;">
-          <a href="{% url 'product_edit' product.id %}" class="btn">Edit</a>
+          <a href="{% url 'product_edit' product.id %}" class="btn">Editar</a>
 
           <form action="{% url 'product_delete' product.id %}"
                 method="post"
@@ -92,7 +92,7 @@ Products Administration — Bean & Bites
             {% csrf_token %}
             <button type="submit"
               class="btn accent"
-              onclick="return confirm('Delete this product?')">
+              onclick="return confirm('Esta seguro que desea eliminar este producto?')">
               Delete
             </button>
           </form>
@@ -102,7 +102,7 @@ Products Administration — Bean & Bites
       {% empty %}
       <tr>
         <td colspan="8" style="text-align:center;color:var(--muted);padding:20px;">
-          No products found.
+          No se encontraron prodcutos.
         </td>
       </tr>
       {% endfor %}

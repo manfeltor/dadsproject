@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Edit Category — Bean & Bites Admin
+Editar Rubro — MoM
 {% endblock %}
 
 {% block topbar %}
@@ -11,7 +11,7 @@ Edit Category — Bean & Bites Admin
     <div class="brand">
       <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop"
            alt="logo" />
-      <h1>Admin — Bean & Bites</h1>
+      <h1>Administrador — MoM</h1>
     </div>
 
     <div class="user-panel">
@@ -20,7 +20,7 @@ Edit Category — Bean & Bites Admin
         <button id="userMenuBtn" class="btn menu-btn">☰</button>
         <div class="menu-dropdown hidden" id="menuDropdown">
           <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
-          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administracion</a>
           <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
         </div>
       </div>
@@ -36,13 +36,13 @@ Edit Category — Bean & Bites Admin
 {% block canvas %}
 
 <div class="admin-local-header container">
-  <a href="{% url 'category_list' %}" class="btn">⬅ Back to Categories</a>
+  <a href="{% url 'rubro_list' %}" class="btn">⬅ Regreso a rubros</a>
 </div>
 
 <main class="container admin-dashboard">
 
-  <h2>Edit Category</h2>
-  <p class="muted">Modify the category name, rubro, or slug.</p>
+  <h2>Edit Rubro</h2>
+  <p class="muted">Modify the name or slug of this rubro.</p>
 
   <form method="post" class="admin-form" style="margin-top:20px; max-width:600px;">
     {% csrf_token %}
@@ -67,7 +67,6 @@ Edit Category — Bean & Bites Admin
   </form>
 
 </main>
-
 {% endblock %}
 
 {% block scripts %}

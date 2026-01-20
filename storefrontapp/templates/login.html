@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Login — Bean & Bites</title>
+  <title>Login — MoM</title>
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   <style>
     body {
@@ -28,7 +28,7 @@
 
   <div class="login-card">
     <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo">
-    <h1>Welcome back</h1>
+    <h1>Bienvenido de vuelta</h1>
 
     {% if messages %}
       <div class="messages">
@@ -41,12 +41,12 @@
     <form method="post" action="{% url 'login' %}">
       {% csrf_token %}
       <div class="form-row">
-        <label for="id_username">Username</label>
+        <label for="id_username">Nombre de usuario</label>
         <input type="text" name="username" id="id_username" required autofocus
                value="{{ form.username.value|default:'' }}">
       </div>
       <div class="form-row">
-        <label for="id_password">Password</label>
+        <label for="id_password">Contraseña</label>
         <input type="password" name="password" id="id_password" required>
       </div>
 
@@ -59,12 +59,12 @@
       <div style="margin-top:10px;">
         <label style="font-size:.9rem;color:var(--muted)">
           <input type="checkbox" name="remember_me" style="vertical-align:middle;margin-right:6px;">
-          Remember me
+          Recuerdame
         </label>
       </div>
     </form>
 
-    <a href="/" class="back-link">← Back to Shop</a>
+    <a href="/" class="back-link">← Regresar a la tienda</a>
   </div>
 
 </body>

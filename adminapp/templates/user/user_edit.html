@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Editar usuario — MoM{% endblock %}
+
+{% block canvas %}
+<main class="container" style="max-width:900px;margin-top:16px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <div>
+      <h2 style="margin:0;">Editar usuario</h2>
+      <p class="muted" style="margin:6px 0 0 0;">
+        Usuario: <strong>{{ user_obj.username }}</strong>
+      </p>
+    </div>
+
+    <a href="{% url 'user_list' %}" class="btn">⬅ Volver a usuarios</a>
+  </div>
+
+  <section class="card" style="margin-top:16px;padding:18px;">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-error">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        {% for field in form %}
+          <div style="display:flex;flex-direction:column;">
+            <label for="{{ field.id_for_label }}">
+              {{ field.label }}
+              {% if field.field.required %}
+                <span style="color:var(--accent);">*</span>
+              {% endif %}
+            </label>
+
+            {{ field }}
+
+            {% if field.help_text %}
+              <small class="muted">{{ field.help_text }}</small>
+            {% endif %}
+
+            {% if field.errors %}
+              <small style="color:var(--accent);">
+                {{ field.errors|striptags }}
+              </small>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if request.user.id == user_obj.id %}
+        <div class="alert alert-info" style="margin-top:16px;">
+          <strong>Nota:</strong> Estás editando tu propio usuario.
+          <ul style="margin:6px 0 0 18px;">
+            <li>No puedes cambiar tu rol.</li>
+            <li>No puedes desactivar tu cuenta.</li>
+          </ul>
+        </div>
+      {% endif %}
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;">
+        <button type="submit" class="btn primary">💾 Guardar cambios</button>
+        <a href="{% url 'user_list' %}" class="btn">Cancelar</a>
+      </div>
+    </form>
+  </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
+{% endblock %}

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Categories Administration — Bean & Bites
+Orders Administration — Bean & Bites
 {% endblock %}
 
 {% block topbar %}
@@ -10,17 +10,17 @@ Categories Administration — Bean & Bites
   <div class="container header-inner">
     <div class="brand">
       <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
-      <h1>Admin — Bean & Bites</h1>
+      <h1>Administrador — MoM</h1>
     </div>
 
-    <!-- User panel (handled by main.js) -->
+    <!-- User menu, handled by main.js -->
     <div class="user-panel">
       {% if request.user.is_authenticated %}
       <div id="userMenu" class="user-menu">
         <button id="userMenuBtn" class="btn menu-btn">☰</button>
         <div class="menu-dropdown hidden" id="menuDropdown">
           <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
-          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administracion</a>
           <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
         </div>
       </div>
@@ -37,53 +37,59 @@ Categories Administration — Bean & Bites
 
 <!-- Local admin header -->
 <div class="admin-local-header container">
-  <a href="{% url 'product_list' %}" class="btn">⬅ Regreso a productos</a>
+  <a href="{% url 'adminlanding' %}" class="btn">⬅ Regreso a panel de administrador</a>
 </div>
 
 <main class="container admin-dashboard">
 
   <div style="display:flex;justify-content:space-between;align-items:center; margin-bottom:20px;">
-    <h2>Categories Administration</h2>
-    <a href="{% url 'category_add' %}" class="btn primary">➕ Add New Category</a>
+    <h2>Administracion de ordenes</h2>
+    <a href="#" class="btn primary">➕ Agregar orden manual</a>
   </div>
-qwdqwd
-  <p class="muted">Manage categories. Categories are grouped under Rubros.</p>
+
+  <p class="muted">Administra tus ordenes. Click en editar para modificar o eliminar para remover una orden.</p>
 
   <table class="users-table" style="margin-top:20px;">
     <thead>
       <tr>
-        <th>Category</th>
-        <th>Rubro</th>
-        <th>Slug</th>
-        <th>Actions</th>
+        <th>ID</th>
+        <th>Estado</th>
+        <th>Metodo de envio</th>
+        <th>Usuario</th>
+        <th>Monto</th>
+        <th>Acciones</th>
       </tr>
     </thead>
 
     <tbody>
-      {% for category in categories %}
+      {% for order in orders %}
       <tr>
-        <td>{{ category.name }}</td>
-        <td>{{ category.rubro.name }}</td>
-        <td>{{ category.slug }}</td>
+        <td>{{ order.id }}</td>
+        <td>{{ order.status }}</td>
+        <td>{{ order.delivery_method }}</td>
+        <td>{{ order.user }}</td>
+        <td>${{ order.total }}</td>
 
         <td class="actions" style="white-space:nowrap;">
-          <a href="{% url 'category_edit' category.id %}" class="btn">Edit</a>
+          <a href="{% url 'order_detail' order.id %}" class="btn">Ver/Editar</a>
 
-          <form action="{% url 'category_delete' category.id %}" method="post" style="display:inline;">
+          <form action="{% url 'order_delete' order.id %}"
+                method="post"
+                style="display:inline;">
             {% csrf_token %}
             <button type="submit"
               class="btn accent"
-              onclick="return confirm('Delete this rubro? All related categories will be removed!')">
-              Delete1
-          </button>
+              onclick="return confirm('Estas seguro que quieres borrar esta orden?')">
+              Delete
+            </button>
           </form>
         </td>
       </tr>
 
       {% empty %}
       <tr>
-        <td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">
-          No categories found.
+        <td colspan="8" style="text-align:center;color:var(--muted);padding:20px;">
+          No se encontraron ordenes.
         </td>
       </tr>
       {% endfor %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Acceso no autorizado — MoM{% endblock %}
+
+{% block canvas %}
+<main class="container" style="max-width:900px;margin:24px auto;">
+  <section class="card" style="padding:22px;">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <div style="font-size:2.2rem;line-height:1;">⛔</div>
+      <div>
+        <h2 style="margin:0;">Acceso no autorizado</h2>
+        <p class="muted" style="margin:6px 0 0 0;">
+          No tienes permisos para ver esta sección.
+        </p>
+      </div>
+    </div>
+
+    <hr style="margin:18px 0; opacity:.2;" />
+
+    <div class="muted" style="font-size:0.98rem;line-height:1.5;">
+      <p style="margin:0 0 10px 0;">
+        Si crees que esto es un error, revisa que hayas iniciado sesión con una cuenta con permisos.
+      </p>
+
+      <ul style="margin:0;padding-left:18px;">
+        <li>Si eres administrador/manager, inicia sesión con tu usuario correspondiente.</li>
+        <li>Si necesitas acceso, solicita permisos al administrador del sistema.</li>
+      </ul>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+      <a href="{% url 'home' %}" class="btn">🏠 Volver a la tienda</a>
+
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="btn accent">🚪 Cerrar sesión</a>
+      {% else %}
+        <button id="loginButton" type="button" class="btn primary">🔐 Iniciar sesión</button>
+      {% endif %}
+    </div>
+
+    <div class="muted" style="margin-top:14px;font-size:.9rem;">
+      Código: <strong>403</strong> · MoM
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+{% if request.user.is_authenticated %}
+<form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
+{% endif %}
+{% endblock %}

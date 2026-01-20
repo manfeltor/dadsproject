@@ -15,7 +15,7 @@ Admin Panel — Bean & Bites
   <div class="container header-inner">
     <div class="brand">
       <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
-      <h1>Admin — Bean & Bites</h1>
+      <h1>Admin — MoM</h1>
     </div>
 
     <!-- User Panel (same as landing.html) -->
@@ -28,7 +28,7 @@ Admin Panel — Bean & Bites
           <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
 
           {% if request.user.role == "manager" %}
-            <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+            <a href="{% url 'adminlanding' %}">⚙️ Administracion</a>
           {% endif %}
 
           <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
@@ -45,35 +45,35 @@ Admin Panel — Bean & Bites
 
 {% block canvas %}
 <div class="admin-local-header container">
-  <a href="{% url 'home' %}" class="btn">🏠 Back to Store</a>
+  <a href="{% url 'home' %}" class="btn">🏠 De vuelta a la tienda</a>
 </div>
 <main class="container admin-dashboard">
-  <h2>Administration Panel</h2>
-  <p class="muted">Manage your store operations below. Choose a section to continue.</p>
+  <h2>Panel de administracion</h2>
+  <p class="muted">Gestiona las operaciones de tu tienda a continuación. Elige una sección para continuar.</p>
 
   <section class="admin-grid">
     <div class="admin-card" id="ordersCard">
-      <h3>📦 Orders</h3>
-      <p>View, update, and fulfill customer orders.</p>
-      <a href="#" class="btn primary">Open Orders</a>
+      <h3>📦 Ordenes</h3>
+      <p>Ver, actualizar y cerrar los pedidos de los clientes.</p>
+      <a href="{% url 'order_list' %}" class="btn primary">Ver ordenes</a>
     </div>
 
     <div class="admin-card" id="usersCard">
-      <h3>👥 Users</h3>
-      <p>Manage registered users, permissions, and account requests.</p>
-      <a href="{% url 'user_list' %}" class="btn primary">Manage Users</a>
+      <h3>👥 Usuarios</h3>
+      <p>Administrar usuarios registrados, permisos y solicitudes de cuentas.</p>
+      <a href="{% url 'user_list' %}" class="btn primary">Administrar usuarios</a>
     </div>
 
     <div class="admin-card" id="messagesCard">
-      <h3>✉️ Messages</h3>
-      <p>Read and respond to contact form messages.</p>
-      <a href="#" class="btn primary">View Messages</a>
+      <h3>✉️ Mensajes</h3>
+      <p>Leer y responder los mensajes del formulario de contacto.</p>
+      <a href="#" class="btn primary">Ver mensajes</a>
     </div>
 
     <div class="admin-card" id="productsCard">
-      <h3>☕ Products</h3>
-      <p>Add, edit, or remove items in your store catalog.</p>
-      <a href="{% url 'product_list' %}" class="btn primary">Manage Products</a>
+      <h3>☕ Productos</h3>
+      <p>Agregue, edite o elimine artículos en el catálogo de su tienda.</p>
+      <a href="{% url 'product_list' %}" class="btn primary">Administrar productos</a>
     </div>
   </section>
 </main>

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Rubros Administration — Bean & Bites
+Administracion de categorias — MoM
 {% endblock %}
 
 {% block topbar %}
@@ -10,7 +10,7 @@ Rubros Administration — Bean & Bites
   <div class="container header-inner">
     <div class="brand">
       <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
-      <h1>Admin — Bean & Bites</h1>
+      <h1>Admin — MoM</h1>
     </div>
 
     <!-- User panel (handled by main.js) -->
@@ -20,7 +20,7 @@ Rubros Administration — Bean & Bites
         <button id="userMenuBtn" class="btn menu-btn">☰</button>
         <div class="menu-dropdown hidden" id="menuDropdown">
           <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
-          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administracion</a>
           <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
         </div>
       </div>
@@ -43,45 +43,47 @@ Rubros Administration — Bean & Bites
 <main class="container admin-dashboard">
 
   <div style="display:flex;justify-content:space-between;align-items:center; margin-bottom:20px;">
-    <h2>Rubros Administration</h2>
-    <a href="{% url 'rubro_add' %}" class="btn primary">➕ Add New Rubro</a>
+    <h2>Administracion de categorias</h2>
+    <a href="{% url 'category_add' %}" class="btn primary">➕ Agregar nueva categoria</a>
   </div>
-
-  <p class="muted">Rubros are the top-level grouping for categories. Example: Coffee, Snacks, Drinks.</p>
+aaaaaaaa
+  <p class="muted">Administrar categorías. Las categorías se agrupan en Rubros.</p>
 
   <table class="users-table" style="margin-top:20px;">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Slug</th>
-        <th>Actions</th>
+        <th>Categoria</th>
+        <th>Rubro</th>
+        <th>Sobrenombre</th>
+        <th>Acciones</th>
       </tr>
     </thead>
 
     <tbody>
-      {% for rubro in rubros %}
+      {% for category in categories %}
       <tr>
-        <td>{{ rubro.name }}</td>
-        <td>{{ rubro.slug }}</td>
+        <td>{{ category.name }}</td>
+        <td>{{ category.rubro.name }}</td>
+        <td>{{ category.slug }}</td>
 
         <td class="actions" style="white-space:nowrap;">
-          <a href="{% url 'rubro_edit' rubro.id %}" class="btn">Edit</a>
+          <a href="{% url 'category_edit' category.id %}" class="btn">Editar</a>
 
-          <form action="{% url 'rubro_delete' rubro.id %}" method="post" style="display:inline;">
+          <form action="{% url 'category_delete' category.id %}" method="post" style="display:inline;">
             {% csrf_token %}
             <button type="submit"
               class="btn accent"
               onclick="return confirm('Delete this rubro? All related categories will be removed!')">
-              Delete
-            </button>
+              Eliminar
+          </button>
           </form>
         </td>
       </tr>
 
       {% empty %}
       <tr>
-        <td colspan="3" style="text-align:center;color:var(--muted);padding:20px;">
-          No rubros found.
+        <td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">
+          No se encontraron categorias.
         </td>
       </tr>
       {% endfor %}

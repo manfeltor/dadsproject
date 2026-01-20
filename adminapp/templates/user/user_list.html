@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}
-Users Administration — Bean & Bites
+Administracion de usuarios — MoM
 {% endblock %}
 
 {% block topbar %}
@@ -9,7 +9,7 @@ Users Administration — Bean & Bites
   <div class="container header-inner">
     <div class="brand">
       <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
-      <h1>Admin — Bean & Bites</h1>
+      <h1>Admin — MoM</h1>
     </div>
 
     <!-- User menu (coming from main.js behavior) -->
@@ -19,7 +19,7 @@ Users Administration — Bean & Bites
         <button id="userMenuBtn" class="btn menu-btn">☰</button>
         <div class="menu-dropdown hidden" id="menuDropdown">
           <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
-          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administracion</a>
           <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
         </div>
       </div>
@@ -36,28 +36,28 @@ Users Administration — Bean & Bites
 
 <!-- Local admin header -->
 <div class="admin-local-header container">
-  <a href="{% url 'adminlanding' %}" class="btn">⬅ Back to Admin Panel</a>
+  <a href="{% url 'adminlanding' %}" class="btn">⬅ Regresar al panel de administrador</a>
 </div>
 
 <main class="users-container">
   <div style="display:flex;justify-content:space-between;align-items:center; margin-bottom: 20px;">
-    <h2>Users Administration</h2>
+    <h2>Administracion de usuarios</h2>
     <a class="btn primary icon-btn" href="{% url 'user_create' %}">
       <span class="icon">+</span>
-      <span>Create User</span>
+      <span>Crear usuario</span>
     </a>
   </div>
 
-  <p class="muted">Click a column header to sort ascending / descending.</p>
+  <p class="muted">Haz clic en el encabezado de una columna para ordenar de forma ascendente o descendente</p>
 
   <table class="users-table" id="usersTable">
     <thead>
       <tr>
         <th data-field="id">ID <span class="sort-indicator"></span></th>
-        <th data-field="username">Username <span class="sort-indicator"></span></th>
-        <th data-field="name">Name <span class="sort-indicator"></span></th>
-        <th data-field="role">Role <span class="sort-indicator"></span></th>
-        <th>Actions</th>
+        <th data-field="username">Nombre usuario <span class="sort-indicator"></span></th>
+        <th data-field="name">Nombre <span class="sort-indicator"></span></th>
+        <th data-field="role">Rol <span class="sort-indicator"></span></th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -68,18 +68,18 @@ Users Administration — Bean & Bites
         <td>{{ user.get_full_name|default:user.username }}</td>
         <td>{{ user.role|default:"-" }}</td>
         <td class="actions">
-          <a href="#" class="btn">Edit</a>
+          <a href="{% url 'user_edit' user.id %}" class="btn">Editar</a>
 
           <form action="{% url 'user_delete' user.id %}" method="post" style="display:inline;">
             {% csrf_token %}
-            <button type="submit" class="btn accent" onclick="return confirm('Delete this user?')">Delete</button>
+            <button type="submit" class="btn accent" onclick="return confirm('Delete this user?')">Eliminar</button>
           </form>
         </td>
       </tr>
       {% empty %}
       <tr>
         <td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">
-          No users found.
+          No se encontraron usuarios
         </td>
       </tr>
       {% endfor %}

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Create Rubro — Bean & Bites Admin
+Crear Rubro — MoM
 {% endblock %}
 
 {% block topbar %}
@@ -11,7 +11,7 @@ Create Rubro — Bean & Bites Admin
     <div class="brand">
       <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop"
            alt="logo" />
-      <h1>Admin — Bean & Bites</h1>
+      <h1>Admin — MoM</h1>
     </div>
 
     <div class="user-panel">
@@ -20,7 +20,7 @@ Create Rubro — Bean & Bites Admin
         <button id="userMenuBtn" class="btn menu-btn">☰</button>
         <div class="menu-dropdown hidden" id="menuDropdown">
           <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
-          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administracion</a>
           <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
         </div>
       </div>
@@ -41,8 +41,8 @@ Create Rubro — Bean & Bites Admin
 
 <main class="container admin-dashboard">
 
-  <h2>Create New Rubro</h2>
-  <p class="muted">Rubros are the top-level grouping for store categories.</p>
+  <h2>Crear nuevo Rubro</h2>
+  <p class="muted">Los rubros son la agrupación de nivel superior para las categorías de tienda.</p>
 
   <form method="post" class="admin-form" style="margin-top:20px; max-width:600px;">
     {% csrf_token %}
@@ -62,7 +62,7 @@ Create Rubro — Bean & Bites Admin
     {% endfor %}
 
     <button type="submit" class="btn primary" style="margin-top:12px;">
-      Create Rubro
+      Crear Rubro
     </button>
   </form>
 

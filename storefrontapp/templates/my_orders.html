@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Mis ordenes — MoM{% endblock %}
+
+{% block canvas %}
+<main class="container" style="max-width:1000px;margin-top:16px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <h2 style="margin:0;">Mis ordenes</h2>
+    <a href="{% url 'home' %}" class="btn">⬅ De vuelta a la tienda</a>
+  </div>
+
+  <p class="muted" style="margin-top:8px;">
+    Realiza seguimiento a tus ordenes.
+  </p>
+
+  {% if page_obj.object_list %}
+    <table class="users-table" style="margin-top:12px;">
+      <thead>
+        <tr>
+          <th style="width:110px;">Orden</th>
+          <th style="width:180px;">Registro</th>
+          <th style="width:160px;">Entrega</th>
+          <th style="width:200px;">Estado</th>
+          <th style="width:140px;">Total</th>
+          <th style="width:120px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in page_obj.object_list %}
+        <tr>
+          <td><strong>#{{ order.id }}</strong></td>
+          <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+          <td>{{ order.get_delivery_method_display }}</td>
+          <td>{{ order.get_status_display }}</td>
+          <td><strong>${{ order.total }}</strong></td>
+          <td style="text-align:right;">
+            <a class="btn" href="{% url 'my_order_detail' order.id %}">Ver</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+      <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:16px 0;flex-wrap:wrap;">
+        {% if page_obj.has_previous %}
+          <a class="btn" href="?page={{ page_obj.previous_page_number }}">« Anterior</a>
+        {% endif %}
+
+        <span class="muted">
+          Page <strong>{{ page_obj.number }}</strong> of <strong>{{ page_obj.paginator.num_pages }}</strong>
+        </span>
+
+        {% if page_obj.has_next %}
+          <a class="btn" href="?page={{ page_obj.next_page_number }}">Siguiente »</a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div class="card" style="padding:16px;margin-top:12px;">
+      <p class="muted" style="margin:0;">Aun no tienes ordenes registradas.</p>
+      <div style="margin-top:12px;">
+        <a href="{% url 'home' %}" class="btn primary">Empezar a comprar</a>
+      </div>
+    </div>
+  {% endif %}
+</main>
+{% endblock %}
+
+{% block scripts %}
+<form id="logoutForm" action="{% url 'logout' %}" method="post" style="display:none;">
+  {% csrf_token %}
+</form>
+{% endblock %}

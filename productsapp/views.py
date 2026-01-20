@@ -13,7 +13,7 @@ def is_manager(user):
 @user_passes_test(is_manager, login_url="/unauthorized/")
 def product_list(request):
     products = Product.objects.select_related("category", "category__rubro").order_by("name")
-    return render(request, "product_list.html", {"products": products})
+    return render(request, "product/product_list.html", {"products": products})
 
 
 @user_passes_test(is_manager, login_url="/unauthorized/")
@@ -27,7 +27,7 @@ def product_add(request):
     else:
         form = ProductForm()
 
-    return render(request, "product_add.html", {"form": form})
+    return render(request, "product/product_add.html", {"form": form})
 
 
 @user_passes_test(is_manager, login_url="/unauthorized/")
@@ -43,7 +43,7 @@ def product_edit(request, product_id):
     else:
         form = ProductForm(instance=product)
 
-    return render(request, "product_edit.html", {"form": form, "product": product})
+    return render(request, "product/product_edit.html", {"form": form, "product": product})
 
 
 @user_passes_test(is_manager, login_url="/unauthorized/")
@@ -67,7 +67,7 @@ def product_delete(request, product_id):
 @user_passes_test(is_manager, login_url="/unauthorized/")
 def category_list(request):
     categories = Category.objects.select_related("rubro").order_by("rubro__name", "name")
-    return render(request, "category_list.html", {"categories": categories})
+    return render(request, "category/category_list.html", {"categories": categories})
 
 
 @user_passes_test(is_manager, login_url="/unauthorized/")
@@ -81,7 +81,7 @@ def category_add(request):
     else:
         form = CategoryForm()
 
-    return render(request, "category_add.html", {"form": form})
+    return render(request, "category/category_add.html", {"form": form})
 
 
 @user_passes_test(is_manager, login_url="/unauthorized/")
@@ -97,7 +97,7 @@ def category_edit(request, category_id):
     else:
         form = CategoryForm(instance=category)
 
-    return render(request, "category_edit.html", {"form": form, "category": category})
+    return render(request, "category/category_edit.html", {"form": form, "category": category})
 
 
 @user_passes_test(is_manager, login_url="/unauthorized/")
@@ -123,7 +123,7 @@ def category_delete(request, category_id):
 @user_passes_test(is_manager, login_url='/unauthorized/')
 def rubro_list(request):
     rubros = Rubro.objects.all().order_by("name")
-    return render(request, "rubro_list.html", {"rubros": rubros})
+    return render(request, "rubro/rubro_list.html", {"rubros": rubros})
 
 @user_passes_test(is_manager, login_url="/unauthorized/")
 def rubro_add(request):
@@ -136,7 +136,7 @@ def rubro_add(request):
     else:
         form = RubroForm()
 
-    return render(request, "rubro_add.html", {"form": form})
+    return render(request, "rubro/rubro_add.html", {"form": form})
 
 
 @user_passes_test(is_manager, login_url="/unauthorized/")
@@ -152,7 +152,7 @@ def rubro_edit(request, rubro_id):
     else:
         form = RubroForm(instance=rubro)
 
-    return render(request, "rubro_edit.html", {"form": form, "rubro": rubro})
+    return render(request, "rubro/rubro_edit.html", {"form": form, "rubro": rubro})
 
 
 @user_passes_test(is_manager, login_url="/unauthorized/")

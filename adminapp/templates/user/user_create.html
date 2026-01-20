@@ -2,25 +2,25 @@
 {% load static %}
 
 {% block title %}
-Create Category — Bean & Bites Admin
+Creacion de usuario - Mom
 {% endblock %}
 
 {% block topbar %}
 <header class="site-header">
   <div class="container header-inner">
     <div class="brand">
-      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop"
-           alt="logo" />
-      <h1>Admin — Bean & Bites</h1>
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
+      <h1>Admin — MoM</h1>
     </div>
 
+    <!-- User menu, powered by main.js -->
     <div class="user-panel">
       {% if request.user.is_authenticated %}
       <div id="userMenu" class="user-menu">
         <button id="userMenuBtn" class="btn menu-btn">☰</button>
         <div class="menu-dropdown hidden" id="menuDropdown">
           <a href="#" id="profileLink">👤 {{ request.user.username }}</a>
-          <a href="{% url 'adminlanding' %}">⚙️ Administration</a>
+          <a href="{% url 'adminlanding' %}">⚙️ Administracion</a>
           <a href="{% url 'logout' %}" class="logout">🚪 Logout</a>
         </div>
       </div>
@@ -35,39 +35,39 @@ Create Category — Bean & Bites Admin
 
 {% block canvas %}
 
+<!-- Local admin header -->
 <div class="admin-local-header container">
-  <a href="{% url 'category_list' %}" class="btn">⬅ Back to Categories</a>
+  <a href="{% url 'user_list' %}" class="btn">⬅ Regresar a la lista de usuarios</a>
 </div>
 
 <main class="container admin-dashboard">
 
-  <h2>Create New Category</h2>
-  <p class="muted">A category belongs to a Rubro (top-level grouping).</p>
+  <h2>Crear nuevo usuario</h2>
+  <p class="muted">Completa el formulario a continuación para crear una nueva cuenta.</p>
 
-  <form method="post" class="admin-form" style="margin-top:20px; max-width:600px;">
+  <form method="post" class="admin-form" style="margin-top: 20px; max-width: 600px;">
     {% csrf_token %}
-
+    
     {% for field in form %}
-      <div class="form-row" style="margin-bottom:16px;">
-        <label for="{{ field.id_for_label }}" style="font-weight:600;">
+      <div class="form-row" style="margin-bottom: 16px;">
+        <label for="{{ field.id_for_label }}" style="font-weight: 600;">
           {{ field.label }}
         </label>
         {{ field }}
         {% if field.errors %}
-          <div class="alert alert-error" style="margin-top:6px;">
+          <div class="alert alert-error" style="margin-top: 6px;">
             {{ field.errors|striptags }}
           </div>
         {% endif %}
       </div>
     {% endfor %}
 
-    <button type="submit" class="btn primary" style="margin-top:12px;">
-      Create Category
+    <button type="submit" class="btn primary" style="margin-top: 12px;">
+      Crear usuario
     </button>
   </form>
 
 </main>
-
 {% endblock %}
 
 {% block scripts %}

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Contact Us — Bean & Bites
+Contactenos — MoM
 {% endblock %}
 
 {% block styles %}
@@ -14,7 +14,7 @@ Contact Us — Bean & Bites
   <div class="container header-inner">
     <div class="brand">
       <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=7b0e8aa6361fd4d641b2f2d7a1efc0c3" alt="logo" />
-      <h1>Bean & Bites</h1>
+      <h1>MoM</h1>
     </div>
 
     <nav class="contact-nav">
@@ -26,10 +26,10 @@ Contact Us — Bean & Bites
 
 {% block canvas %}
 <main class="container" style="max-width:600px;margin-top:40px;margin-bottom:60px;">
-  <h2 style="text-align:center;color:var(--brand);margin-bottom:10px;">Request an Account</h2>
+  <h2 style="text-align:center;color:var(--brand);margin-bottom:10px;">Solicitar una cuenta</h2>
   <p style="text-align:center;color:var(--muted);margin-bottom:24px;">
-    Only verified business partners and customers can have accounts.
-    Fill in your details below and our team will reach out to approve your access.
+    Solo partners y clientes verificados pueden tener una cuenta.
+    Completa tus datos a continuación y nuestro equipo se comunicará contigo para aprobar tu acceso.
   </p>
 
   <form id="contactForm" class="contact-form" method="post" novalidate>
@@ -54,15 +54,15 @@ Contact Us — Bean & Bites
     </div>
 
     <button type="submit" class="btn primary" style="width:100%;font-size:1rem;margin-top:10px;">
-      Send Request
+      Enviar solicitud
     </button>
   </form>
 
   {% if sent %}
   <div id="contactSuccess" style="margin-top:20px;text-align:center;">
-    <h3>✅ Request Sent!</h3>
-    <p>Thank you for reaching out. Our team will contact you soon.</p>
-    <a href="{% url 'home' %}" class="btn">Back to Store</a>
+    <h3>✅ Solicitud enviada!</h3>
+    <p>Gracias por contactarnos. Nuestro equipo se pondrá en contacto contigo pronto.</p>
+    <a href="{% url 'home' %}" class="btn">Regresar a la tienda</a>
   </div>
   {% endif %}
 </main>
